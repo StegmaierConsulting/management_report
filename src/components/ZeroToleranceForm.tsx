@@ -55,7 +55,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Suceso: ",
+            text: "1. Suceso: ",
             font: "Calibri",
             size: 22, // 11 points * 2 (since docx uses half-points)
             color: "000000",
@@ -74,7 +74,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Tipo: ",
+            text: "2. Tipo: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -93,7 +93,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Lugar, comuna: ",
+            text: "3. Lugar, Comuna: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -112,7 +112,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Fecha y Hora: ",
+            text: "4. Fecha y Hora: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -131,7 +131,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Área, Zona: ",
+            text: "5. Área, Zona: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -150,7 +150,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Empresa: ",
+            text: "6. Empresa: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -169,7 +169,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Supervisor CGE: ",
+            text: "7. Supervisor CGE: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -188,7 +188,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Descripción: ",
+            text: "8. Descripción: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -207,7 +207,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Número Prosafety: ",
+            text: "9. Número Prosafety: ",
             font: "Calibri",
             size: 22,
             color: "000000",
@@ -226,7 +226,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
       new Paragraph({
         children: [
           new TextRun({
-            text: "Fotografías: ",
+            text: "10. Fotografías: ",
             font: "Calibri",
             size: 22,
             color: "000000",
