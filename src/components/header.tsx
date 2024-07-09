@@ -24,15 +24,13 @@ function Navbar({ className }: { className?: string }) {
       <Menu setActive={setActive}>
         <MenuItem setActive={setActive} active={active} item="Formularios">
           <div className="flex flex-col space-y-4 text-sm">
-            <HoveredLink href="/SubstandardCondition">Condición Subestándar</HoveredLink>
-            <HoveredLink href="/StopWork">Stop Work</HoveredLink>
-            <HoveredLink href="/seo">Incidente o Accidente</HoveredLink>
+            <HoveredLink href="/ZeroTolerance">Tolerancia Cero</HoveredLink>
+            <HoveredLink href="/IncidentOrAccident">Incidente o Accidente</HoveredLink>
           </div>
         </MenuItem>
         <MenuItem setActive={setActive} active={active} item="Buscador">
           <div className="flex flex-col space-y-4 text-sm">
-            <HoveredLink href="/web-dev">Tolerancia 0 Condición subestándar</HoveredLink>
-            <HoveredLink href="/interface-design">Tolerancia 0 Stop Work</HoveredLink>
+            <HoveredLink href="/web-dev">Condición Subestándar</HoveredLink>
             <HoveredLink href="/seo">Incidente o Accidente</HoveredLink>
           </div>
         </MenuItem>
