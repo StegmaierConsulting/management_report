@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Document, ImageRun, Packer, Paragraph, TextRun } from 'docx';
+import { Document, ImageRun, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 
 export interface DatosExtraidos {
@@ -256,34 +256,108 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
 
       const imageBase64s = await Promise.all(imagePromises);
 
-      imageBase64s.forEach((base64) => {
-        paragraphs.push(
-          new Paragraph({
+      const rows = [];
+      for (let i = 0; i < imageBase64s.length; i += 2) {
+        const cells = [];
+
+        cells.push(
+          new TableCell({
             children: [
-              new ImageRun({
-                data: base64.split(",")[1], // Remove the data URL part
-                transformation: {
-                  width: 300,
-                  height: 200,
-                },
+              new Paragraph({
+                children: [
+                  new ImageRun({
+                    data: imageBase64s[i].split(",")[1], // Remove the data URL part
+                    transformation: {
+                      width: 300,
+                      height: 200,
+                    },
+                  }),
+                ],
+                alignment: AlignmentType.CENTER,
               }),
             ],
+            width: {
+              size: 50,
+              type: WidthType.PERCENTAGE,
+            },
           })
         );
-      });
-    }
 
-    const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: paragraphs,
+        if (i + 1 < imageBase64s.length) {
+          cells.push(
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new ImageRun({
+                      data: imageBase64s[i + 1].split(",")[1], // Remove the data URL part
+                      transformation: {
+                        width: 300,
+                        height: 200,
+                      },
+                    }),
+                  ],
+                  alignment: AlignmentType.CENTER,
+                }),
+              ],
+              width: {
+                size: 50,
+                type: WidthType.PERCENTAGE,
+              },
+            })
+          );
+        } else {
+          cells.push(
+            new TableCell({
+              children: [],
+              width: {
+                size: 50,
+                type: WidthType.PERCENTAGE,
+              },
+            })
+          );
+        }
+
+        rows.push(
+          new TableRow({
+            children: cells,
+          })
+        );
+      }
+
+      const table = new Table({
+        rows: rows,
+        width: {
+          size: 100,
+          type: WidthType.PERCENTAGE,
         },
-      ],
-    });
+      });
 
-    const buffer = await Packer.toBlob(doc);
-    saveAs(buffer, 'ZeroToleranceForm.docx');
+      // Asegúrate de agregar la tabla al documento directamente en la sección, no como un párrafo.
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: [...paragraphs, table], // Agregar la tabla directamente a la sección.
+          },
+        ],
+      });
+
+      const buffer = await Packer.toBlob(doc);
+      saveAs(buffer, 'ZeroToleranceForm.docx');
+    } else {
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: paragraphs, // Sin la tabla si no hay imágenes.
+          },
+        ],
+      });
+
+      const buffer = await Packer.toBlob(doc);
+      saveAs(buffer, 'ZeroToleranceForm.docx');
+    }
   };
 
   return (
