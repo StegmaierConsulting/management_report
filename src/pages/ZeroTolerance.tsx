@@ -1,14 +1,29 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { signOut } from 'firebase/auth';
+import { authentication } from '@/config/firebase';
 import AutomaticLanguageChecker from '../utils/automaticLanguageCheckerZeroTolerance';
 import SubstandardCondition, { DatosExtraidos } from '../components/ZeroToleranceForm';
 import { Header } from '@/components/header';
 import '@/app/globals.css';
 import { motion } from 'framer-motion';
+import ProtectedRoute from '@/auth/protectedRoute';
 
 
 export default function ZeroTolerance() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(authentication);
+      router.push('/');
+    } catch (error: any) {
+      console.error('Error al cerrar sesión:', error.message);
+    }
+  };
+
   const [textoPegado, setTextoPegado] = useState('');
   const [datosExtraidos, setDatosExtraidos] = useState<DatosExtraidos>({});
   const [previas, setPrevias] = useState<string[]>([]);
@@ -28,6 +43,7 @@ export default function ZeroTolerance() {
   };
 
   return (
+    <ProtectedRoute>
     <>
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-transparent p-4 -mt-8">
@@ -38,7 +54,7 @@ export default function ZeroTolerance() {
           transition={{ duration: 0.5 }}
         >
           <div>
-            <h1 className="text-2xl text-center text-sky-700 p-2 font-bold">
+            <h1 className="text-2xl text-center text-blue-400 p-2 font-bold">
               Ingrese texto a Formatear
             </h1>
           </div>
@@ -55,5 +71,6 @@ export default function ZeroTolerance() {
         </motion.div>
       </div>
     </>
+    </ProtectedRoute>
   );
 }
