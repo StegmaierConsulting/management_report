@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
   --scrollbar-bg: #f1f1f1;
   --scrollbar-thumb-bg: #888;
   --scrollbar-thumb-bg-hover: #555;
@@ -23,13 +20,7 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color:#333;
 }
 
 /* Custom Scrollbar Styles */
@@ -55,4 +46,13 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.bg-glass {
+background: rgba(255, 255, 255, 0.47);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(14px);
+-webkit-backdrop-filter: blur(14px);
+border: 1px solid rgba(255, 255, 255, 0.3);
 }
