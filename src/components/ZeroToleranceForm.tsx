@@ -363,7 +363,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
   return (
     <div>
       <form className="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl text-center text-sky-700 p-2 font-bold mb-4">Reporte Tolerancia Cero</h2>
+        <h2 className="text-2xl text-center text-blue-400 p-2 font-bold mb-4">Reporte Tolerancia Cero</h2>
 
         <div className="space-y-4">
           <div>
