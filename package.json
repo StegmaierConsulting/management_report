@@ -19,18 +19,22 @@
     "firebase": "^10.12.3",
     "framer-motion": "^11.2.12",
     "html-docx-js": "^0.3.1",
+    "html-to-image": "^1.11.11",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "mammoth": "^1.8.0",
     "next": "14.2.4",
     "nspell": "^2.1.5",
     "pizzip": "^3.1.7",
+    "pptxgenjs": "^3.12.0",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "react-quill": "^2.0.0",
     "spellchecker": "^3.7.1",
-    "tailwind-merge": "^2.3.0"
+    "tailwind-merge": "^2.3.0",
+    "xlsx": "^0.18.5",
+    "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
