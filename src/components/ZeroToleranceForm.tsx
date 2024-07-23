@@ -1,9 +1,11 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, useEffect, ReactNode } from 'react';
 import { Document, ImageRun, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 import AuthSaveButton from '@/components/AuthSaveButton';
 
 export interface DatosExtraidos {
+  timestamp: any;
+  numeroDocumento: ReactNode;
   suceso?: string;
   tipo?: string;
   lugar?: string;
