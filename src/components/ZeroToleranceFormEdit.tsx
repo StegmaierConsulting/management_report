@@ -1,3 +1,4 @@
+// ZeroToleranceFormEdit.tsx
 import React, { useState, ChangeEvent, useEffect, ReactNode } from 'react';
 import { Document, ImageRun, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
@@ -531,7 +532,7 @@ function ZeroToleranceFormEdit({ datos, onDatosChange, onFileChange, selectedEmp
             ))}
           </div>
         </form>
-        <ImageModal isOpen={modalIsOpen} onRequestClose={closeModal} imageUrl={selectedImage} />
+        <ImageModal isOpen={modalIsOpen} onRequestClose={closeModal} imageUrl={selectedImage || ''} />
         <button onClick={updateDocument} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
           Actualizar en DB
         </button>
