@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Document, ImageRun, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
+import AuthSaveButton from '@/components/AuthSaveButton';
 
 export interface DatosExtraidos {
   suceso?: string;
@@ -493,6 +494,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
           ))}
         </div>
       </form>
+      <AuthSaveButton data={valores} images={imagenes} collectionName="ZeroToleranceReports" />
       <button onClick={downloadDoc} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
         Download as Word
       </button>
