@@ -56,3 +56,75 @@ backdrop-filter: blur(14px);
 -webkit-backdrop-filter: blur(14px);
 border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+
+/* globals.css */
+.custom-checkbox {
+  appearance: none;
+  background-color: white;
+  border: 2px solid #005a8d;
+  width: 30px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.custom-checkbox:checked {
+  background-color: #004165;
+  border: 1px solid #004165;
+}
+
+
+/* Custom styles if needed */
+.w-1 { width: 100px; } /* Custom width for column 1 */
+.w-2 { width: 100px; } /* Custom width for column 2 */
+.w-3 { width: 100px; } /* Custom width for column 3 */
+/* ... Repeat for other columns ... */
+
+.h-1 { height: 30px; } /* Custom height for row 1 */
+.h-2 { height: 30px; } /* Custom height for row 2 */
+.h-3 { height: 30px; } /* Custom height for row 3 */
+/* ... Repeat for other rows ... */
+
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  outline: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-image {
+  max-width: 90%;
+  max-height: 80vh;
+  margin-bottom: 20px;
+}
+
+.modal-close-btn {
+  background: #ff5a5f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -21,7 +21,7 @@ function Navbar({ className }: { className?: string }) {
       <div className="flex items-center space-x-4 bg-white p-2 rounded-full ">
         <Link href="/main">
           <Image
-            src="/stegmaier.png" // Cambia este src por la ruta de tu imagen
+            src="/stegmaier.png"
             alt="Logo"
             width={150}
             height={60}
@@ -32,12 +32,16 @@ function Navbar({ className }: { className?: string }) {
           <MenuItem setActive={setActive} active={active} item="Formularios">
             <div className="flex flex-col space-y-2 text-sm">
               <HoveredLink href="/ZeroTolerance">Tolerancia Cero</HoveredLink>
-              <HoveredLink href="/IncidentOrAccident">Incidente o Accidente</HoveredLink>
+              <HoveredLink href="/IncidentOrAccidentFlashReport">1 Reporte Flash</HoveredLink>
+              <HoveredLink href="/IncidentOrAccidentImmediateActions">2 Acciones Inmediatas</HoveredLink>
+              <HoveredLink href="/IncidentOrAccident">3 Investigacion de Causas</HoveredLink>
+              <HoveredLink href="/IncidentOrAccident">4 Plan de Accion</HoveredLink>
+              <HoveredLink href="/IncidentOrAccident">5 Informe Final</HoveredLink>
             </div>
           </MenuItem>
           <MenuItem setActive={setActive} active={active} item="Buscador">
             <div className="flex flex-col space-y-2 text-sm">
-              <HoveredLink href="/web-dev">Condición Subestándar</HoveredLink>
+              <HoveredLink href="/SearchZeroTolerance">Tolerancia Cero</HoveredLink>
               <HoveredLink href="/seo">Incidente o Accidente</HoveredLink>
             </div>
           </MenuItem>
