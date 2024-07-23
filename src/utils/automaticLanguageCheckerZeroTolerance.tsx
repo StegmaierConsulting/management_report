@@ -1,8 +1,7 @@
-// components/automaticLanguageChecker.tsx
 import { DatosExtraidos } from '@/components/ZeroToleranceForm';
 
 function AutomaticLanguageChecker({ texto }: { texto: string }): DatosExtraidos {
-  const regex: Record<keyof DatosExtraidos, RegExp> = {
+  const regex: Partial<Record<keyof DatosExtraidos, RegExp>> = {
     suceso: /^1[\.\-]?\s*s?uceso?s?:?\s*(.+)$/im,
     tipo: /^2[\.\-]?\s*t?i?p?o?s?:?\s*(.+)$/im,
     lugar: /^3[\.\-]?\s*l?u?g?a?r?,?\s*c?o?m?u?n?a?:?\s*(.+)$/im,
@@ -15,11 +14,27 @@ function AutomaticLanguageChecker({ texto }: { texto: string }): DatosExtraidos 
     fotografias: /^10[\.\-]?\s*f?o?t?o?g?r?a?f?í?a?s?:?\s*(.+)$/im,
   };
 
-  const datos: DatosExtraidos = {};
+  const datos: DatosExtraidos = {
+    timestamp: null,
+    numeroDocumento: '',
+    suceso: '',
+    tipo: '',
+    lugar: '',
+    fechaHora: '',
+    areaZona: '',
+    empresa: '',
+    supervisor: '',
+    descripcion: '',
+    numeroProsafety: '',
+    fotografias: ''
+  };
+
   for (const campo of Object.keys(regex) as (keyof DatosExtraidos)[]) { 
-    const match = texto.match(regex[campo]);
-    if (match) {
-      datos[campo] = match[1].trim(); 
+    if (regex[campo]) {  // Check if the regex exists
+      const match = texto.match(regex[campo] as RegExp);
+      if (match) {
+        datos[campo] = match[1].trim(); 
+      }
     }
   }
 

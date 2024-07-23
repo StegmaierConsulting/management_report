@@ -21,13 +21,13 @@ export interface DatosExtraidos {
 interface ZeroToleranceProps {
   datos: DatosExtraidos;
   onDatosChange: (updatedDatos: DatosExtraidos) => void;
-  onFileChange: (nuevasPrevias: string[]) => void; // Nueva prop para manejar los cambios en las imágenes
+  onFileChange: (nuevasPrevias: string[]) => void;
 }
 
 function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroToleranceProps) {
   const [valores, setValores] = useState(datos);
-  const [imagenes, setImagenes] = useState<FileList | null>(null); // Estado para las imágenes seleccionadas
-  const [previas, setPrevias] = useState<string[]>([]); // Estado para las vistas previas de las imágenes
+  const [imagenes, setImagenes] = useState<FileList | null>(null);
+  const [previas, setPrevias] = useState<string[]>([]);
 
   useEffect(() => {
     setValores(datos);
@@ -36,7 +36,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newValues = { ...valores, [event.target.id]: event.target.value };
     setValores(newValues);
-    onDatosChange(newValues); // Propagar los cambios hacia arriba
+    onDatosChange(newValues);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -46,10 +46,10 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
     if (files) {
       const nuevasPrevias = Array.from(files).map((file) => URL.createObjectURL(file));
       setPrevias(nuevasPrevias);
-      onFileChange(nuevasPrevias); // Propagar las nuevas vistas previas hacia arriba
+      onFileChange(nuevasPrevias);
     } else {
       setPrevias([]);
-      onFileChange([]); // Propagar una lista vacía hacia arriba
+      onFileChange([]);
     }
   };
 
@@ -60,7 +60,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
           new TextRun({
             text: "1. Suceso: ",
             font: "Calibri",
-            size: 22, // 11 points * 2 (since docx uses half-points)
+            size: 22,
             color: "000000",
           }),
           new TextRun({
@@ -71,7 +71,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
           }),
         ],
         spacing: {
-          line: 480, // 24 points * 20 (since docx uses twips)
+          line: 480,
         },
       }),
       new Paragraph({
@@ -269,7 +269,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
               new Paragraph({
                 children: [
                   new ImageRun({
-                    data: imageBase64s[i].split(",")[1], // Remove the data URL part
+                    data: imageBase64s[i].split(",")[1],
                     transformation: {
                       width: 300,
                       height: 200,
@@ -293,7 +293,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
                 new Paragraph({
                   children: [
                     new ImageRun({
-                      data: imageBase64s[i + 1].split(",")[1], // Remove the data URL part
+                      data: imageBase64s[i + 1].split(",")[1],
                       transformation: {
                         width: 300,
                         height: 200,
@@ -336,12 +336,11 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
         },
       });
 
-      // Asegúrate de agregar la tabla al documento directamente en la sección, no como un párrafo.
       const doc = new Document({
         sections: [
           {
             properties: {},
-            children: [...paragraphs, table], // Agregar la tabla directamente a la sección.
+            children: [...paragraphs, table],
           },
         ],
       });
@@ -353,7 +352,7 @@ function ZeroToleranceForm({ datos, onDatosChange, onFileChange }: ZeroTolerance
         sections: [
           {
             properties: {},
-            children: paragraphs, // Sin la tabla si no hay imágenes.
+            children: paragraphs,
           },
         ],
       });
