@@ -42,7 +42,7 @@ function Navbar({ className }: { className?: string }) {
           <MenuItem setActive={setActive} active={active} item="Buscador">
             <div className="flex flex-col space-y-2 text-sm">
               <HoveredLink href="/SearchZeroTolerance">Tolerancia Cero</HoveredLink>
-              <HoveredLink href="/seo">Incidente o Accidente</HoveredLink>
+              <HoveredLink href="/SearchIncidentOrAccidentReport">Reporte Flash IoA</HoveredLink>
             </div>
           </MenuItem>
         </Menu>
