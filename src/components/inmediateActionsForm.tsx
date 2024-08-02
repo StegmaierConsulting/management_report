@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ExportButton from '@/components/ExportButtonTable';
+import AuthSaveButton from '@/components/AuthSaveButton';
 
 const columnSizes = [
   '6.71px', '27.84px', '14.40px', '14.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
@@ -59,6 +61,16 @@ const Table: React.FC = () => {
 
   const handleClientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setClient(e.target.value);
+  };
+
+  const getTableData = () => {
+    return {
+      mainInput,
+      date,
+      autoDate,
+      autoClient,
+      ...inputValues
+    };
   };
 
   return (
@@ -149,7 +161,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin2'] || autoDate} onChange={(e) => handleInputChange(e, 'fin2')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+              <input type="text" value={inputValues['responsable1'] || ''} onChange={(e) => handleInputChange(e, 'responsable1')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <input type="text" value={inputValues['cliente1'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente1')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" onBlur={handleClientChange}/>
@@ -172,7 +184,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin3'] || autoDate} onChange={(e) => handleInputChange(e, 'fin3')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center" />
+              <input type="text" value={inputValues['responsable2'] || ''} onChange={(e) => handleInputChange(e, 'responsable2')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <input type="text" value={inputValues['cliente2'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente2')} className="w-full h-full border-none focus:outline-none text-center" />
@@ -195,7 +207,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin4'] || autoDate} onChange={(e) => handleInputChange(e, 'fin4')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+              <input type="text" value={inputValues['responsable3'] || ''} onChange={(e) => handleInputChange(e, 'responsable3')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <input type="text" value={inputValues['cliente3'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente3')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
@@ -218,7 +230,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin5'] || autoDate} onChange={(e) => handleInputChange(e, 'fin5')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center" />
+              <input type="text" value={inputValues['responsable4'] || ''} onChange={(e) => handleInputChange(e, 'responsable4')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <input type="text" value={inputValues['cliente4'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente4')} className="w-full h-full border-none focus:outline-none text-center" />
@@ -241,7 +253,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin6'] || autoDate} onChange={(e) => handleInputChange(e, 'fin6')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+              <input type="text" value={inputValues['responsable5'] || ''} onChange={(e) => handleInputChange(e, 'responsable5')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <input type="text" value={inputValues['cliente5'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente5')} className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
@@ -264,7 +276,7 @@ const Table: React.FC = () => {
               <input type="text" value={inputValues['fin7'] || autoDate} onChange={(e) => handleInputChange(e, 'fin7')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" className="w-full h-full border-none focus:outline-none text-center" />
+              <input type="text" value={inputValues['responsable6'] || ''} onChange={(e) => handleInputChange(e, 'responsable6')} className="w-full h-full border-none focus:outline-none text-center" />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <input type="text" value={inputValues['cliente6'] || autoClient} onChange={(e) => handleInputChange(e, 'cliente6')} className="w-full h-full border-none focus:outline-none text-center" />
@@ -278,7 +290,8 @@ const Table: React.FC = () => {
           </tr>
         </tbody>
       </table>
-      
+      <ExportButton tableId="myTable" />
+      <AuthSaveButton data={getTableData()} collectionName="InmediateActions" />
     </div>
   );
 };
