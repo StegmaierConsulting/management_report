@@ -44,6 +44,7 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/SearchZeroTolerance">Tolerancia Cero</HoveredLink>
               <HoveredLink href="/SearchIncidentOrAccidentReport">Reporte Flash IoA</HoveredLink>
               <HoveredLink href="/SearchInmediateActions">Reporte Acciones Inmediatas</HoveredLink>
+              <HoveredLink href="/SearchRootCauseAnalysis">Reporte Investigacion de Causas</HoveredLink>
             </div>
           </MenuItem>
         </Menu>
