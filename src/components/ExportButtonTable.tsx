@@ -9,14 +9,16 @@ interface ExportButtonProps {
 
 const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
   const exportToPdf = async () => {
-    const inputElements = document.querySelectorAll('input');
+    // Seleccionar todos los elementos input y textarea
+    const inputElements = document.querySelectorAll(`#${tableId} input, #${tableId} textarea`);
     const inputValues: { [key: string]: string } = {};
 
-    // Save the input values and replace them with text nodes
+    // Guardar los valores de los inputs y reemplazarlos por nodos de texto
     inputElements.forEach((input, index) => {
-      inputValues[index] = (input as HTMLInputElement).value;
+      inputValues[index] = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
       const textNode = document.createElement('span');
-      textNode.innerText = (input as HTMLInputElement).value;
+      textNode.innerText = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
+      textNode.style.whiteSpace = 'pre-wrap'; // Mantener los saltos de línea
       textNode.style.display = 'inline-block';
       textNode.style.width = window.getComputedStyle(input).width;
       textNode.classList.add('temp-text');
@@ -36,7 +38,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       });
     });
 
-    const input = document.getElementById(tableId) as HTMLTableElement;
+    const input = document.getElementById(tableId) as HTMLDivElement;
     if (input) {
       const canvas = await html2canvas(input);
       const imgData = canvas.toDataURL('image/png');
@@ -49,13 +51,23 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       pdf.save('table.pdf');
     }
 
-    // Replace the text nodes with the original inputs
+    // Revertir los nodos de texto a los inputs originales
     inputContainers.forEach((text, index) => {
-      const input = document.createElement('input');
-      input.value = inputValues[index];
-      input.style.width = (text as HTMLElement).style.width;
-      input.style.display = 'inline-block';
-      text.replaceWith(input);
+      const originalInput = inputElements[index] as HTMLInputElement | HTMLTextAreaElement;
+      if (originalInput.tagName.toLowerCase() === 'input') {
+        const input = document.createElement('input');
+        input.value = inputValues[index];
+        input.style.width = (text as HTMLElement).style.width;
+        input.style.display = 'inline-block';
+        text.replaceWith(input);
+      } else if (originalInput.tagName.toLowerCase() === 'textarea') {
+        const textarea = document.createElement('textarea');
+        textarea.value = inputValues[index];
+        textarea.style.width = (text as HTMLElement).style.width;
+        textarea.style.height = (text as HTMLElement).style.height;
+        textarea.style.display = 'inline-block';
+        text.replaceWith(textarea);
+      }
     });
   };
 
