@@ -34,7 +34,7 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/ZeroTolerance">Tolerancia Cero</HoveredLink>
               <HoveredLink href="/IncidentOrAccidentFlashReport">1 Reporte Flash</HoveredLink>
               <HoveredLink href="/IncidentOrAccidentImmediateActions">2 Acciones Inmediatas</HoveredLink>
-              <HoveredLink href="/IncidentOrAccident">3 Investigacion de Causas</HoveredLink>
+              <HoveredLink href="/RootCauseAnalysis">3 Investigacion de Causas</HoveredLink>
               <HoveredLink href="/IncidentOrAccident">4 Plan de Accion</HoveredLink>
               <HoveredLink href="/IncidentOrAccident">5 Informe Final</HoveredLink>
             </div>
