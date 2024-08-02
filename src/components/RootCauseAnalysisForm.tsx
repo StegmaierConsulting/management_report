@@ -1,6 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+// components/RootCauseAnalysisForm.tsx
+import React, { useState } from 'react';
 import AuthSaveButton from '@/components/AuthSaveButton';
-import ExportButton from '@/components/ExportButtonTable'; 
+import ExportButton from '@/components/ExportButtonTable';
+import { useAutoResizeTextarea } from '@/hooks/useAutoResizeTextarea';
 
 const RootCauseAnalysisForm: React.FC = () => {
   const [tables, setTables] = useState([
@@ -9,42 +11,9 @@ const RootCauseAnalysisForm: React.FC = () => {
     { id: 3, inputText1: '', inputText2: '', inputText3: '', inputText4: '', inputText5: '' },
   ]);
 
-  // Custom hook to auto-adjust the height of the textarea
-  const useAutoResizeTextarea = (value: string) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    useEffect(() => {
-      const textarea = textareaRef.current;
-      if (textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-      }
-    }, [value]);
-
-    return textareaRef;
-  };
-
-  const handleInputChange = (index: number, field: string, value: string) => {
-    const newTables = [...tables];
-    newTables[index] = { ...newTables[index], [field]: value };
-    setTables(newTables);
-  };
-
-  // Función para recopilar todos los datos de las tablas
-  const collectFormData = () => {
-    return tables.map((table) => ({
-      id: table.id,
-      inputText1: table.inputText1,
-      inputText2: table.inputText2,
-      inputText3: table.inputText3,
-      inputText4: table.inputText4,
-      inputText5: table.inputText5,
-    }));
-  };
-
   return (
     <div className="overflow-x-auto">
-      <div id="tables-container"> {/* Contenedor de tablas con un id */}
+      <div id="tables-container">
         {tables.map((table, index) => (
           <table key={table.id} className="table-auto border-collapse w-full bg-white mb-4">
             <thead>
@@ -62,7 +31,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                   <textarea
                     className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                     value={table.inputText1}
-                    onChange={(e) => handleInputChange(index, 'inputText1', e.target.value)}
+                    onChange={(e) => setTables(tables.map((t, i) => i === index ? { ...t, inputText1: e.target.value } : t))}
                     placeholder="Ingrese observación, causa inmediata o problema"
                     ref={useAutoResizeTextarea(table.inputText1)}
                   />
@@ -74,7 +43,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                   <textarea
                     className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                     value={table.inputText5}
-                    onChange={(e) => handleInputChange(index, 'inputText5', e.target.value)}
+                    onChange={(e) => setTables(tables.map((t, i) => i === index ? { ...t, inputText5: e.target.value } : t))}
                     placeholder="Ingrese acción a incluir en plan de acción"
                     ref={useAutoResizeTextarea(table.inputText5)}
                   />
@@ -86,7 +55,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                     type="text"
                     className="w-full p-2 border-none outline-none"
                     value={table.inputText2}
-                    onChange={(e) => handleInputChange(index, 'inputText2', e.target.value)}
+                    onChange={(e) => setTables(tables.map((t, i) => i === index ? { ...t, inputText2: e.target.value } : t))}
                     placeholder="Ingrese texto aquí"
                   />
                 </td>
@@ -95,7 +64,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                     type="text"
                     className="w-full p-2 border-none outline-none"
                     value={table.inputText3}
-                    onChange={(e) => handleInputChange(index, 'inputText3', e.target.value)}
+                    onChange={(e) => setTables(tables.map((t, i) => i === index ? { ...t, inputText3: e.target.value } : t))}
                     placeholder="Ingrese texto aquí"
                   />
                 </td>
@@ -104,7 +73,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                     type="text"
                     className="w-full p-2 border-none outline-none bg-transparent"
                     value={table.inputText4}
-                    onChange={(e) => handleInputChange(index, 'inputText4', e.target.value)}
+                    onChange={(e) => setTables(tables.map((t, i) => i === index ? { ...t, inputText4: e.target.value } : t))}
                     placeholder="Ingrese texto aquí"
                   />
                 </td>
@@ -118,10 +87,10 @@ const RootCauseAnalysisForm: React.FC = () => {
       </div>
       <div className="mt-4">
         <AuthSaveButton
-          data={collectFormData()}
+          data={tables}
           collectionName="RootCauseAnalysis"
         />
-        <ExportButton tableId="tables-container" /> {/* Botón de exportación a PDF */}
+        <ExportButton tableId="tables-container" />
       </div>
     </div>
   );

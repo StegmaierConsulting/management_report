@@ -9,16 +9,14 @@ interface ExportButtonProps {
 
 const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
   const exportToPdf = async () => {
-    // Seleccionar todos los elementos input y textarea
     const inputElements = document.querySelectorAll(`#${tableId} input, #${tableId} textarea`);
     const inputValues: { [key: string]: string } = {};
 
-    // Guardar los valores de los inputs y reemplazarlos por nodos de texto
     inputElements.forEach((input, index) => {
       inputValues[index] = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
       const textNode = document.createElement('span');
       textNode.innerText = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
-      textNode.style.whiteSpace = 'pre-wrap'; // Mantener los saltos de línea
+      textNode.style.whiteSpace = 'pre-wrap';
       textNode.style.display = 'inline-block';
       textNode.style.width = window.getComputedStyle(input).width;
       textNode.classList.add('temp-text');
@@ -51,7 +49,6 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       pdf.save('table.pdf');
     }
 
-    // Revertir los nodos de texto a los inputs originales
     inputContainers.forEach((text, index) => {
       const originalInput = inputElements[index] as HTMLInputElement | HTMLTextAreaElement;
       if (originalInput.tagName.toLowerCase() === 'input') {
