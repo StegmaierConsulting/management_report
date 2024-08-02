@@ -1,19 +1,16 @@
 // hooks/useAutoResizeTextarea.ts
 import { useEffect, useRef } from 'react';
 
-export const useAutoResizeTextarea = () => {
+export const useAutoResizeTextarea = (value: string) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
 
-  const adjustHeight = () => {
+  useEffect(() => {
     if (ref.current) {
       ref.current.style.height = 'auto';
-      ref.current.style.height = ref.current.scrollHeight + 'px';
+      ref.current.style.height = `${ref.current.scrollHeight}px`;
     }
-  };
+  }, [value]);
 
-  useEffect(() => {
-    adjustHeight();
-  });
-
-  return { ref, adjustHeight };
+  return ref;
 };
+

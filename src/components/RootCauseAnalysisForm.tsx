@@ -11,19 +11,13 @@ const RootCauseAnalysisForm: React.FC = () => {
     { id: 3, inputText1: '', inputText2: '', inputText3: '', inputText4: '', inputText5: '' },
   ]);
 
-  const handleInputChange = (index: number, field: string, value: string) => {
-    const newTables = [...tables];
-    newTables[index] = { ...newTables[index], [field]: value };
-    setTables(newTables);
-  };
-
   return (
     <div className="overflow-x-auto">
       <div id="tables-container">
         {tables.map((table, index) => {
-          const { ref: inputText1Ref } = useAutoResizeTextarea();
-          const { ref: inputText5Ref } = useAutoResizeTextarea();
-          
+          const inputText1Ref = useAutoResizeTextarea(table.inputText1);
+          const inputText5Ref = useAutoResizeTextarea(table.inputText5);
+
           return (
             <table key={table.id} className="table-auto border-collapse w-full bg-white mb-4">
               <thead>
@@ -41,7 +35,11 @@ const RootCauseAnalysisForm: React.FC = () => {
                     <textarea
                       className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                       value={table.inputText1}
-                      onChange={(e) => handleInputChange(index, 'inputText1', e.target.value)}
+                      onChange={(e) => {
+                        const newTables = [...tables];
+                        newTables[index] = { ...newTables[index], inputText1: e.target.value };
+                        setTables(newTables);
+                      }}
                       placeholder="Ingrese observación, causa inmediata o problema"
                       ref={inputText1Ref}
                     />
@@ -53,7 +51,11 @@ const RootCauseAnalysisForm: React.FC = () => {
                     <textarea
                       className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                       value={table.inputText5}
-                      onChange={(e) => handleInputChange(index, 'inputText5', e.target.value)}
+                      onChange={(e) => {
+                        const newTables = [...tables];
+                        newTables[index] = { ...newTables[index], inputText5: e.target.value };
+                        setTables(newTables);
+                      }}
                       placeholder="Ingrese acción a incluir en plan de acción"
                       ref={inputText5Ref}
                     />
@@ -65,7 +67,11 @@ const RootCauseAnalysisForm: React.FC = () => {
                       type="text"
                       className="w-full p-2 border-none outline-none"
                       value={table.inputText2}
-                      onChange={(e) => handleInputChange(index, 'inputText2', e.target.value)}
+                      onChange={(e) => {
+                        const newTables = [...tables];
+                        newTables[index] = { ...newTables[index], inputText2: e.target.value };
+                        setTables(newTables);
+                      }}
                       placeholder="Ingrese texto aquí"
                     />
                   </td>
@@ -74,7 +80,11 @@ const RootCauseAnalysisForm: React.FC = () => {
                       type="text"
                       className="w-full p-2 border-none outline-none"
                       value={table.inputText3}
-                      onChange={(e) => handleInputChange(index, 'inputText3', e.target.value)}
+                      onChange={(e) => {
+                        const newTables = [...tables];
+                        newTables[index] = { ...newTables[index], inputText3: e.target.value };
+                        setTables(newTables);
+                      }}
                       placeholder="Ingrese texto aquí"
                     />
                   </td>
@@ -83,7 +93,11 @@ const RootCauseAnalysisForm: React.FC = () => {
                       type="text"
                       className="w-full p-2 border-none outline-none bg-transparent"
                       value={table.inputText4}
-                      onChange={(e) => handleInputChange(index, 'inputText4', e.target.value)}
+                      onChange={(e) => {
+                        const newTables = [...tables];
+                        newTables[index] = { ...newTables[index], inputText4: e.target.value };
+                        setTables(newTables);
+                      }}
                       placeholder="Ingrese texto aquí"
                     />
                   </td>
