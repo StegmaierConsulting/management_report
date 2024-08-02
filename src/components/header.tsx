@@ -43,6 +43,7 @@ function Navbar({ className }: { className?: string }) {
             <div className="flex flex-col space-y-2 text-sm">
               <HoveredLink href="/SearchZeroTolerance">Tolerancia Cero</HoveredLink>
               <HoveredLink href="/SearchIncidentOrAccidentReport">Reporte Flash IoA</HoveredLink>
+              <HoveredLink href="/SearchInmediateActions">Reporte Acciones Inmediatas</HoveredLink>
             </div>
           </MenuItem>
         </Menu>
