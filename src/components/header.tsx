@@ -45,6 +45,7 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/SearchIncidentOrAccidentReport">Reporte Flash IoA</HoveredLink>
               <HoveredLink href="/SearchInmediateActions">Reporte Acciones Inmediatas</HoveredLink>
               <HoveredLink href="/SearchRootCauseAnalysis">Reporte Investigacion de Causas</HoveredLink>
+              <HoveredLink href="/SearchCourseOfAction">Reporte Plan de Accion</HoveredLink>
             </div>
           </MenuItem>
         </Menu>
