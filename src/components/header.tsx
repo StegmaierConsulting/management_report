@@ -36,7 +36,7 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/IncidentOrAccidentImmediateActions">2 Acciones Inmediatas</HoveredLink>
               <HoveredLink href="/RootCauseAnalysis">3 Investigacion de Causas</HoveredLink>
               <HoveredLink href="/CourseOfAction">4 Plan de Accion</HoveredLink>
-              <HoveredLink href="/IncidentOrAccident">5 Informe Final</HoveredLink>
+              <HoveredLink href="/ConcludingReport">5 Informe Final</HoveredLink>
             </div>
           </MenuItem>
           <MenuItem setActive={setActive} active={active} item="Buscador">
