@@ -34,7 +34,7 @@ interface IncidentFormProps {
 
 const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) => {
   const [images, setImages] = useState<string[]>([]);
-  const [logo, setLogo] = useState<string | null>(null);
+  const [logos, setLogos] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -48,10 +48,10 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const logoURL = URL.createObjectURL(file);
-      setLogo(logoURL);
+    const files = event.target.files;
+    if (files) {
+      const newLogos = Array.from(files).map(file => URL.createObjectURL(file));
+      setLogos(newLogos);
     }
   };
 
@@ -177,11 +177,11 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
               />
             </div>
           </div>
-          {logo && (
-            <div className="flex justify-end items-center">
-              <img src={logo} alt="Logo" className="max-w-xs max-h-20 object-contain" />
-            </div>
-          )}
+          <div className="flex justify-end items-center">
+            {logos.map((logo, index) => (
+              <img key={index} src={logo} alt={`Logo ${index + 1}`} className="max-w-xs max-h-20 object-contain mx-1" />
+            ))}
+          </div>
         </div>
         <table className="w-full border-collapse border border-gray-300 bg-white">
           <thead>
@@ -410,8 +410,8 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
         <label htmlFor="image-upload" className="cursor-pointer p-2 bg-green-500 text-white rounded mr-4">Subir Imágenes</label>
         <button onClick={exportToPPTX} className="p-2 bg-blue-500 text-white rounded mr-4 hover:bg-blue-600 transition-colors duration-300">Exportar a PPTX</button>
         <button onClick={exportToPDF} className="p-2 bg-blue-500 text-white rounded mr-4 hover:bg-blue-600 transition-colors duration-300">Exportar a PDF</button>
-        <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" id="logo-upload" />
-        <label htmlFor="logo-upload" className="cursor-pointer p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-300">Subir Logo</label>
+        <input type="file" accept="image/*" multiple onChange={handleLogoUpload} className="hidden" id="logo-upload" />
+        <label htmlFor="logo-upload" className="cursor-pointer p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-300">Subir Logos</label>
         <AuthSaveButton data={formData} images={imageFiles} collectionName="Flash" />
       </div>
     </div>
