@@ -17,39 +17,35 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       const textNode = document.createElement('span');
       textNode.innerText = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
       textNode.style.whiteSpace = 'pre-wrap';
+
+      // Copiar todos los estilos relevantes
+      const inputStyle = window.getComputedStyle(input as HTMLElement);
+      textNode.style.cssText = inputStyle.cssText;
       textNode.style.display = 'inline-block';
-      textNode.style.width = window.getComputedStyle(input).width;
+      textNode.style.width = inputStyle.width;
+
       textNode.classList.add('temp-text');
       input.replaceWith(textNode);
     });
 
-    const inputContainers = document.querySelectorAll('.temp-text') as NodeListOf<HTMLElement>;
-
-    inputContainers.forEach((text, index) => {
-      const textStyle = (text as HTMLElement).style;
-      const inputStyle = window.getComputedStyle(inputElements[index] as HTMLElement);
-
-      Object.assign(textStyle, {
-        ...inputStyle,
-        display: 'inline-block',
-        width: inputStyle.width,
-      });
-    });
-
     const input = document.getElementById(tableId) as HTMLDivElement;
     if (input) {
-      const canvas = await html2canvas(input);
+      const canvas = await html2canvas(input, {
+        scale: 2, // Aumentar la resolución de la imagen para una mejor calidad
+        useCORS: true, // Permitir la carga de recursos de otros dominios
+      });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
-        format: [canvas.width, canvas.height]
+        format: [canvas.width, canvas.height],
       });
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
       pdf.save('table.pdf');
     }
 
-    inputContainers.forEach((text, index) => {
+    // Restaurar los inputs y textareas originales
+    document.querySelectorAll('.temp-text').forEach((text, index) => {
       const originalInput = inputElements[index] as HTMLInputElement | HTMLTextAreaElement;
       if (originalInput.tagName.toLowerCase() === 'input') {
         const input = document.createElement('input');
