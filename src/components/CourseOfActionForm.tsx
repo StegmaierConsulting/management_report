@@ -19,11 +19,18 @@ const CourseOfActionForm: React.FC = () => {
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue = e.target.value;
     setDate(dateValue);
-    const startDate = new Date(dateValue);
+
+    // Convertir la fecha de 'dd/mm/yyyy' a 'mm/dd/yyyy' para usar en Date()
+    const [day, month, year] = dateValue.split('/');
+    const formattedDate = `${month}/${day}/${year}`;
+    const startDate = new Date(formattedDate);
+
     if (!isNaN(startDate.getTime())) {
       const endDate = new Date(startDate);
       endDate.setDate(startDate.getDate() + 6);
-      const formattedEndDate = `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+
+      // Formatear la fecha de fin a 'dd/mm/yyyy'
+      const formattedEndDate = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
 
       const newInputValues = {
         ...inputValues,
