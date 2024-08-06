@@ -86,7 +86,7 @@ const RootCauseAnalysisForm: React.FC = () => {
                     />
                   </td>
                   {table.porques.map((_, porqueIndex) => (
-                    <td key={porqueIndex} className="border px-4 bg-[#f2f2f2]">
+                    <td key={porqueIndex} className="border px-4 bg-[#f2f2f2] py-3">
                       {porqueIndex === 0 ? (
                         <span>{`¿Por qué ${table.inputText1}?`}</span>
                       ) : (
