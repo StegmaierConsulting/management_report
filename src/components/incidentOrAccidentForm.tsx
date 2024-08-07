@@ -37,6 +37,7 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
   const [logos, setLogos] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
+  const textAreaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -145,26 +146,23 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
     });
   };
 
-  const adjustTextareaHeight = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const target = e.target;
-    target.style.height = 'auto';
-    target.style.height = `${target.scrollHeight}px`;
+  const adjustTextareaHeight = (textarea: HTMLTextAreaElement) => {
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
   useEffect(() => {
-    const textareas = document.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
+    textAreaRefs.current.forEach(textarea => {
+      if (textarea) adjustTextareaHeight(textarea);
     });
-  }, []);
+  }, [formData]);
 
   return (
     <div className="container-sm w-full p-4 bg-gray-100">
       <div ref={tableRef}>
         <div className="mb-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-[#004165]">REPORTE FLASH / {formData.suceso.toUpperCase()} {formData.tipo.toUpperCase()}</h1>
+            <h1 className="text-2xl font-bold text-[#004165]">REPORTE FLASH / {(formData.suceso || '').toUpperCase()} {(formData.tipo || '').toUpperCase()}</h1>
             <div className="flex items-center">
               <h2 className="text-2xl font-bold text-[#004165] mr-2">ZONAL:</h2>
               <input
@@ -352,21 +350,31 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
                 <textarea
                   name="descripcion"
                   value={formData.descripcion}
-                  onChange={handleDescriptionChange}
+                  onChange={(e) => {
+                    handleDescriptionChange(e);
+                    adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                  }}
                   className="w-full text-[#004165] text-lg bg-[#cacdd2] bg-opacity-100 pl-2 resize-none"
                   rows={4}
-                  onInput={adjustTextareaHeight}
+                  ref={(el) => {
+                    textAreaRefs.current[0] = el;
+                  }}
                 />
               </td>
               <td className="p-2 border-b-4 border-r-4 border-white bg-[#cacdd2]" rowSpan={3}>
                 <textarea
                   name="accionesInmediatas"
                   value={formData.accionesInmediatas}
-                  onChange={handleBulletChange}
+                  onChange={(e) => {
+                    handleBulletChange(e);
+                    adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                  }}
                   onKeyDown={handleKeyDown}
-                  onInput={adjustTextareaHeight}
                   className="w-full text-[#004165] text-lg bg-[#cacdd2] bg-opacity-100 pl-2 resize-none"
                   rows={4}
+                  ref={(el) => {
+                    textAreaRefs.current[1] = el;
+                  }}
                 />
               </td>
             </tr>
@@ -383,22 +391,32 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
                 <textarea
                   name="controlesInmediatos"
                   value={formData.controlesInmediatos}
-                  onChange={handleBulletChange}
+                  onChange={(e) => {
+                    handleBulletChange(e);
+                    adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                  }}
                   onKeyDown={handleKeyDown}
-                  onInput={adjustTextareaHeight}
                   className="w-full text-[#004165] text-lg bg-[#cacdd2] bg-opacity-100 pl-2 resize-none"
                   rows={4}
+                  ref={(el) => {
+                    textAreaRefs.current[2] = el;
+                  }}
                 />
               </td>
               <td className="p-2 border-b-4 border-r-4 border-white bg-[#cacdd2]" rowSpan={3}>
                 <textarea
                   name="factoresRiesgo"
                   value={formData.factoresRiesgo}
-                  onChange={handleBulletChange}
+                  onChange={(e) => {
+                    handleBulletChange(e);
+                    adjustTextareaHeight(e.target as HTMLTextAreaElement);
+                  }}
                   onKeyDown={handleKeyDown}
-                  onInput={adjustTextareaHeight}
                   className="w-full text-[#004165] text-lg bg-[#cacdd2] bg-opacity-100 pl-2 resize-none"
                   rows={4}
+                  ref={(el) => {
+                    textAreaRefs.current[3] = el;
+                  }}
                 />
               </td>
             </tr>
