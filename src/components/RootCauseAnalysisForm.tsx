@@ -1,4 +1,3 @@
-// components/RootCauseAnalysisForm.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import AuthSaveButton from '@/components/AuthSaveButton';
 import ExportButton from '@/components/ExportButtonTable';
@@ -16,8 +15,8 @@ const RootCauseAnalysisForm: React.FC = () => {
     inputRefs.current.forEach(refs => {
       refs.forEach(ref => {
         if (ref) {
-          ref.style.height = 'auto';
-          ref.style.height = `${ref.scrollHeight}px`;
+          ref.style.height = 'auto'; // Reinicia la altura
+          ref.style.height = `${ref.scrollHeight}px`; // Ajusta la altura al contenido
         }
       });
     });
@@ -31,6 +30,13 @@ const RootCauseAnalysisForm: React.FC = () => {
       newTables[index] = { ...newTables[index], [field]: value };
     }
     setTables(newTables);
+
+    // Recalcula la altura del textarea que ha cambiado
+    const targetRef = porqueIndex !== undefined ? inputRefs.current[index][porqueIndex + 2] : inputRefs.current[index][field === 'inputText1' ? 0 : 1];
+    if (targetRef) {
+      targetRef.style.height = 'auto'; // Reinicia la altura
+      targetRef.style.height = `${targetRef.scrollHeight}px`; // Ajusta la altura al contenido
+    }
   };
 
   const addPorqueColumn = (index: number) => {
@@ -120,6 +126,12 @@ const RootCauseAnalysisForm: React.FC = () => {
                         value={porque}
                         onChange={(e) => handleInputChange(index, 'porques', e.target.value, porqueIndex)}
                         placeholder="Ingrese texto aquí"
+                        ref={(el) => {
+                          if (!inputRefs.current[index]) {
+                            inputRefs.current[index] = [];
+                          }
+                          inputRefs.current[index][porqueIndex + 2] = el; // porqueIndex + 2 porque los dos primeros son inputText1 y inputText5
+                        }}
                       />
                     </td>
                   ))}
