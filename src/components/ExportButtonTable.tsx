@@ -25,9 +25,10 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       const inputStyle = window.getComputedStyle(input as HTMLElement);
       textNode.style.cssText = inputStyle.cssText;
       textNode.style.width = inputStyle.width; // Ajustar el ancho al tamaño de la celda
+      textNode.style.minHeight = inputStyle.height; // Mantener altura mínima de la celda
       textNode.style.height = 'auto'; // Ajustar la altura según el contenido
-      textNode.style.overflow = 'hidden'; // Asegurar que no se salga del contenedor
-      textNode.style.wordWrap = 'break-word'; // Ajustar el texto para que no se desborde horizontalmente
+      textNode.style.overflowWrap = 'break-word'; // Ajustar el texto para que no se desborde horizontalmente
+      textNode.style.overflow = 'visible'; // Asegurar que el contenido se expanda verticalmente
       textNode.classList.add('temp-text');
       input.replaceWith(textNode);
     });
@@ -66,4 +67,5 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
 };
 
 export default ExportButton;
+
 
