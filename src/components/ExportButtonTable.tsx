@@ -10,23 +10,22 @@ interface ExportButtonProps {
 const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
   const exportToPdf = async () => {
     // Reemplazar inputs y textareas con spans temporales
-    const inputElements = document.querySelectorAll(`#${tableId} input, #${tableId} textarea`);
+    const inputElements = document.querySelectorAll(`#${tableId} textarea`);
     const inputValues: { [key: string]: string } = {};
 
     inputElements.forEach((input, index) => {
-      inputValues[index] = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
-      const textNode = document.createElement('span');
-      textNode.innerText = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
-      textNode.style.whiteSpace = 'pre-wrap';
+      inputValues[index] = (input as HTMLTextAreaElement).value;
 
-      // Copiar estilos relevantes del input/textarea al span
+      const textNode = document.createElement('span');
+      textNode.innerText = inputValues[index];
+      textNode.style.whiteSpace = 'pre-wrap'; // Mantener saltos de línea y espacios en blanco
+      textNode.style.display = 'block'; // Asegurar que el texto se muestre en bloque completo
+
+      // Copiar estilos relevantes del textarea al span
       const inputStyle = window.getComputedStyle(input as HTMLElement);
       textNode.style.cssText = inputStyle.cssText;
       textNode.style.width = inputStyle.width;
-      textNode.style.height = inputStyle.height; // Asegurar que se respete la altura
-      textNode.style.overflow = 'hidden'; // Manejar overflow
-      textNode.style.display = 'inline-block';
-
+      textNode.style.height = 'auto'; // Dejar que el contenido determine la altura
       textNode.classList.add('temp-text');
       input.replaceWith(textNode);
     });
@@ -51,19 +50,9 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
 
     // Restaurar inputs y textareas originales
     document.querySelectorAll('.temp-text').forEach((text, index) => {
-      const originalInput = inputElements[index] as HTMLInputElement | HTMLTextAreaElement;
-      if (originalInput.tagName.toLowerCase() === 'input') {
-        const input = document.createElement('input');
-        input.value = inputValues[index];
-        input.style.width = (text as HTMLElement).style.width;
-        text.replaceWith(input);
-      } else if (originalInput.tagName.toLowerCase() === 'textarea') {
-        const textarea = document.createElement('textarea');
-        textarea.value = inputValues[index];
-        textarea.style.width = (text as HTMLElement).style.width;
-        textarea.style.height = (text as HTMLElement).style.height;
-        text.replaceWith(textarea);
-      }
+      const textarea = document.createElement('textarea');
+      textarea.value = inputValues[index];
+      text.replaceWith(textarea);
     });
   };
 
@@ -75,4 +64,3 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
 };
 
 export default ExportButton;
-
