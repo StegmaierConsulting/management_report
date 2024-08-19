@@ -3,7 +3,7 @@ import ExportButton from '@/components/ExportButtonTable';
 import AuthSaveButton from '@/components/AuthSaveButton';
 
 const columnSizes = [
-  '6.71px', '27.84px', '27.84px', '14.40px', '14.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
+  '6.71px', '30.84px', '30.84px', '20.40px', '20.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
 ];
 
 const rowSizes = [
