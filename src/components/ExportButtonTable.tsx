@@ -9,7 +9,7 @@ interface ExportButtonProps {
 
 const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
   const exportToPdf = async () => {
-    // Reemplazar inputs y textareas con spans temporales
+    // Reemplazar textareas con spans temporales
     const inputElements = document.querySelectorAll(`#${tableId} textarea`);
     const inputValues: { [key: string]: string } = {};
 
@@ -24,8 +24,10 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       // Copiar estilos relevantes del textarea al span
       const inputStyle = window.getComputedStyle(input as HTMLElement);
       textNode.style.cssText = inputStyle.cssText;
-      textNode.style.width = inputStyle.width;
-      textNode.style.height = 'auto'; // Dejar que el contenido determine la altura
+      textNode.style.width = inputStyle.width; // Ajustar el ancho al tamaño de la celda
+      textNode.style.height = 'auto'; // Ajustar la altura según el contenido
+      textNode.style.overflow = 'hidden'; // Asegurar que no se salga del contenedor
+      textNode.style.wordWrap = 'break-word'; // Ajustar el texto para que no se desborde horizontalmente
       textNode.classList.add('temp-text');
       input.replaceWith(textNode);
     });
@@ -48,7 +50,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
       pdf.save('table.pdf');
     }
 
-    // Restaurar inputs y textareas originales
+    // Restaurar los textareas originales
     document.querySelectorAll('.temp-text').forEach((text, index) => {
       const textarea = document.createElement('textarea');
       textarea.value = inputValues[index];
@@ -64,3 +66,4 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tableId }) => {
 };
 
 export default ExportButton;
+
