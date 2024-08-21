@@ -36,6 +36,7 @@ const MainPage: React.FC = () => {
   // State for logos
   const [leftLogo, setLeftLogo] = useState<string | null>(null);
   const [rightLogo, setRightLogo] = useState<string | null>(null);
+  const [sideImage, setSideImage] = useState<string | null>(null); // Nuevo estado para la imagen lateral
 
   const page1Ref = useRef<HTMLDivElement>(null);
   const page2Ref = useRef<HTMLDivElement>(null);
@@ -143,7 +144,12 @@ const MainPage: React.FC = () => {
         const width = imgWidth * ratio;
         const height = imgHeight * ratio;
 
-        doc.addImage(imgData, 'PNG', 0, 0, width, height);
+        // Si la imagen lateral está disponible, agregarla al PDF
+        if (sideImage) {
+          doc.addImage(sideImage, 'PNG', 0, 0, 30, pageHeight); // 30 es el ancho de la imagen en el PDF
+        }
+
+        doc.addImage(imgData, 'PNG', 30, 0, width - 30, height); // Desplaza el contenido a la derecha para la imagen lateral
         if (!isLastPage) doc.addPage();
       }
     };
@@ -185,6 +191,18 @@ const MainPage: React.FC = () => {
     });
   };
 
+  // Función para manejar la carga de la imagen lateral
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSideImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -197,7 +215,20 @@ const MainPage: React.FC = () => {
           }}
         />
       ) : (
-        <div id="main-container" className="px-32 py-28 bg-white">
+        <div id="main-container" className="relative px-32 py-28 bg-white">
+          {/* Input para cargar la imagen lateral */}
+          <div className="mb-4">
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+          </div>
+
+          {/* Lateral Image */}
+          {sideImage && (
+            <div
+              className="absolute top-0 left-0 h-full w-24 bg-cover bg-no-repeat"
+              style={{ backgroundImage: `url(${sideImage})` }}
+            />
+          )}
+
           <div className="flex justify-center mb-4">
             <input
               type="text"
@@ -314,4 +345,3 @@ const MainPage: React.FC = () => {
 };
 
 export default MainPage;
-

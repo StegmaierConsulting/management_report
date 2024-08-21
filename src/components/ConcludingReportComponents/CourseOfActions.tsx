@@ -13,51 +13,55 @@ export interface DatosExtraidos {
   id: string;
   numeroDocumento: string;
   timestamp: Date;
-  tipo1: string;
-  tipo2: string;
-  tipo3: string;
-  tipo4: string;
-  tipo5: string;
-  subtarea1: string;
-  subtarea2: string;
-  subtarea3: string;
-  subtarea4: string;
-  subtarea5: string;
-  responsable1: string;
-  responsable2: string;
-  responsable3: string;
-  responsable4: string;
-  responsable5: string;
-  cliente1: string;
-  cliente2: string;
-  cliente3: string;
-  cliente4: string;
-  cliente5: string;
-  inicio1: string;
-  inicio2: string;
-  inicio3: string;
-  inicio4: string;
-  inicio5: string;
-  inicio6: string;
-  fin1: string;
-  fin2: string;
-  fin3: string;
-  fin4: string;
-  fin5: string;
-  fin6: string;
+  [key: string]: any; // Para permitir propiedades dinámicas
 }
 
 const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }) => {
   if (!formData) {
-    return <div>No data available</div>;
+    return <div>No hay datos disponibles</div>;
   }
+
+  // Filtrar y ordenar las tareas dinámicas excluyendo las tareas estáticas (si las hay)
+  const tareasDinamicas = Object.keys(formData)
+    .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
+    .map((key) => {
+      const index = parseInt(key.replace('tarea', ''));
+      return {
+        id: index,
+        tarea: formData[key],
+        subtarea: formData[`subtarea${index}`],
+        inicio: formData[`inicio${index}`],
+        fin: formData[`fin${index}`],
+        responsable: formData[`responsable${index}`],
+        cliente: formData[`cliente${index}`],
+        tipo: formData[`tipo${index}`],
+      };
+    })
+    .filter((tarea) => tarea.tarea) // Filtrar solo las filas con tarea
+    .sort((a, b) => a.id - b.id); // Ordenar por el número de tarea
+
+  // Propagar fechas y tipo ACC-INC si están vacías
+  const fechaInicioPropagada = formData.inicio1;
+  const fechaFinPropagada = formData.fin1;
+  const tipoPropagado = formData.tipo1;
+
+  tareasDinamicas.forEach((tarea) => {
+    tarea.inicio = tarea.inicio || fechaInicioPropagada;
+    tarea.fin = tarea.fin || fechaFinPropagada;
+    tarea.tipo = tarea.tipo || tipoPropagado;
+  });
+
+  // Propagar fechas y tipo en la última fila estática (Reportar Avances de Plan de Acción)
+  const inicioUltimaFila = formData.inicio6 || fechaInicioPropagada;
+  const finUltimaFila = formData.fin6 || fechaFinPropagada;
+  const tipoUltimaFila = formData.tipo5 || tipoPropagado;
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
       <h2 className="text-2xl font-bold mb-4">13. ACCIONES CORRELATIVAS/PREVENTIVAS</h2>
       <table id="viewTable" className="table-fixed min-w-full divide-y divide-gray-200">
         <tbody className="bg-white divide-y divide-gray-200">
-          {/* First row */}
+          {/* Primera fila (estática) */}
           <tr>
             <td colSpan={11} className="bg-[#00B0F0]">
               <div className="flex items-center w-full">
@@ -66,51 +70,51 @@ const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }
               </div>
             </td>
           </tr>
-          {/* Second row */}
+          {/* Segunda fila (estática) */}
           <tr style={{ height: rowSizes[1] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border-none" colSpan={2}>
+            <td style={{ width: columnSizes[0] }} colSpan={2} className="border-none">
               <div className="flex items-center w-full">
                 <span className="text-left">Fecha:</span>
                 <span className="ml-2 flex-1">{formData.inicio1}</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
                 <span className="text-center">Duración</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border-none">
+            <td style={{ width: columnSizes[3] }} className="border-none">
               <div className="flex items-center w-full h-full">
                 <span className="text-left">Inicio</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
                 <span className="text-left">Término</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border-none" colSpan={2}>
+            <td style={{ width: columnSizes[5] }} colSpan={2} className="border-none">
               <div className="flex items-center w-full">
                 <span className="text-left">%Avance Plan en Tiempo</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300">
               <span className="text-left">100%</span>
             </td>
             <td colSpan={3} className="border-none"></td>
           </tr>
-          {/* Third row */}
+          {/* Tercera fila (estática) */}
           <tr style={{ height: rowSizes[2] }}>
             <td colSpan={2} className="border-none"></td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
                 <span className="text-center">7 días</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
               <span className="w-full h-full text-center">{formData.inicio1}</span>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
               <span className="w-full h-full text-center">{formData.fin1}</span>
             </td>
             <td colSpan={2} className="border-none">
@@ -118,157 +122,107 @@ const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }
                 <span className="text-left">%Estatus Plan</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300">
               <span className="text-left">100%</span>
             </td>
             <td colSpan={3} className="border-none"></td>
           </tr>
-          {/* Fourth row */}
+          {/* Cuarta fila (estática) */}
           <tr style={{ height: rowSizes[3] }}>
             <td colSpan={11} className="border-none"></td>
           </tr>
-          {/* Fifth row */}
+          {/* Quinta fila (cabecera dinámica) */}
           <tr style={{ height: rowSizes[4] }} className='bg-[#00B0F0]'>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">#</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-center align-middle">Tarea</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-center align-middle">Sub-Tarea</td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 text-center align-middle">INICIO</td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 text-center align-middle">FIN</td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 text-center align-middle">Responsable</td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">Cliente</td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">Avance Real</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">Avance Programado</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 text-center align-middle">Tipo ACC-INC</td>
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">#</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-center align-middle">Tarea</td>
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-center align-middle">Sub-Tarea</td>
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300 text-center align-middle">INICIO</td>
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300 text-center align-middle">FIN</td>
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300 text-center align-middle">Responsable</td>
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300 text-center align-middle">Cliente</td>
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">Avance Real</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">Avance Programado</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300 text-center align-middle">Tipo ACC-INC</td>
           </tr>
-          {/* Sixth row */}
-          <tr style={{ height: rowSizes[5] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">1</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Desarrollar Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">
-              <span className="w-full h-full border-none text-center bg-[#D9E1F2] bg-opacity-100">{formData.subtarea1}</span>
+          {/* Primera fila dinámica (estática) */}
+          <tr style={{ height: rowSizes[5] }} className="bg-[#D9E1F2]">
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">1</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Desarrollar Medidas Correctivas</td>
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+              <span className="w-full h-full text-center">{formData.subtarea1}</span>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.inicio2}</span>
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.inicio2}</span>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.fin2}</span>
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.fin2}</span>
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.responsable1}</span>
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.responsable1}</span>
             </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.cliente1}</span>
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.cliente1}</span>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo1}</span>
-            </td>
-          </tr>
-          {/* Seventh row */}
-          <tr style={{ height: rowSizes[6] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">2</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
-              <span className="w-full h-full border-none text-center">{formData.subtarea2}</span>
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.inicio3}</span>
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.fin3}</span>
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.responsable2}</span>
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.cliente2}</span>
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.tipo2}</span>
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.tipo1}</span>
             </td>
           </tr>
-          {/* Eighth row */}
-          <tr style={{ height: rowSizes[7] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">3</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">
-              <span className="w-full h-full border-none text-center bg-[#D9E1F2] bg-opacity-100">{formData.subtarea3}</span>
+          {/* Filas dinámicas */}
+          {tareasDinamicas.map((tarea, index) => (
+            <tr key={tarea.id} style={{ height: rowSizes[6 + index] }} className={index % 2 === 0 ? 'bg-white' : 'bg-[#D9E1F2]'}>
+              <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{tarea.id}</td>
+              <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">{tarea.tarea}</td>
+              <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+                <span className="w-full h-full text-center">{tarea.subtarea}</span>
+              </td>
+              <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+                <span className="w-full h-full text-center">{tarea.inicio}</span>
+              </td>
+              <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+                <span className="w-full h-full text-center">{tarea.fin}</span>
+              </td>
+              <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+                <span className="w-full h-full text-center">{tarea.responsable}</span>
+              </td>
+              <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+                <span className="w-full h-full text-center">{tarea.cliente}</span>
+              </td>
+              <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+              <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+              <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+              <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+                <span className="w-full h-full text-center">{tarea.tipo}</span>
+              </td>
+            </tr>
+          ))}
+          {/* Última fila fija (estática) */}
+          <tr style={{ height: rowSizes[9] }} className="bg-[#D9E1F2]">
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{tareasDinamicas.length + 2}</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Reportar Avances de Plan de Acción</td>
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+              <span className="w-full h-full text-center">{formData.subtarea5}</span>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.inicio4}</span>
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{inicioUltimaFila}</span>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.fin4}</span>
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{finUltimaFila}</span>
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.responsable3}</span>
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.responsable5}</span>
             </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.cliente3}</span>
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{formData.cliente5}</span>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo3}</span>
-            </td>
-          </tr>
-          {/* Ninth row */}
-          <tr style={{ height: rowSizes[8] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">4</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
-              <span className="w-full h-full border-none text-center">{formData.subtarea4}</span>
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.inicio5}</span>
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.fin5}</span>
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.responsable4}</span>
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.cliente4}</span>
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.tipo4}</span>
-            </td>
-          </tr>
-          {/* Tenth row */}
-          <tr style={{ height: rowSizes[9] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">5</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Reportar Avances de Plan de Acción</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full border-none text-center bg-[#D9E1F2] bg-opacity-100">{formData.subtarea5}</span>
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.inicio6}</span>
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.fin6}</span>
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.responsable5}</span>
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.cliente5}</span>
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo5}</span>
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+              <span className="w-full h-full text-center">{tipoUltimaFila}</span>
             </td>
           </tr>
         </tbody>
