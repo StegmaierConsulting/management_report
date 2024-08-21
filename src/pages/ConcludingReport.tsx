@@ -215,7 +215,7 @@ const MainPage: React.FC = () => {
           }}
         />
       ) : (
-        <div id="main-container" className="relative px-32 py-28 bg-white">
+        <div id="main-container" className="relative bg-white">
           {/* Input para cargar la imagen lateral */}
           <div className="mb-4">
             <input type="file" accept="image/*" onChange={handleImageUpload} />
@@ -247,7 +247,7 @@ const MainPage: React.FC = () => {
 
           {results.length > 0 || rootCauseData.length > 0 || flashData ? (
             <>
-              <div ref={page1Ref} className='mx-16'>
+              <div ref={page1Ref} className="w-full">
                 <LogoUploader
                   leftLogo={leftLogo}
                   rightLogo={rightLogo}

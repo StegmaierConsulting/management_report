@@ -56,7 +56,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLef
           <img
             src={leftLogo}
             alt="Left Logo"
-            style={{ maxHeight: '100px', width: 'auto' }}
+            style={{ width: '300px', height: '250px', objectFit: 'contain' }} // Ancho y alto fijos
           />
         )}
       </div>
@@ -74,7 +74,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLef
           <img
             src={rightLogo}
             alt="Right Logo"
-            style={{ maxHeight: '200px', width: 'auto' }}
+            style={{ width: '300px', height: '250px', objectFit: 'contain' }} // Ancho y alto fijos
           />
         )}
       </div>
@@ -83,4 +83,3 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLef
 };
 
 export default LogoUploader;
-
