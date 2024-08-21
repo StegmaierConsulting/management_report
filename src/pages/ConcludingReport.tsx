@@ -215,7 +215,7 @@ const MainPage: React.FC = () => {
           }}
         />
       ) : (
-        <div id="main-container" className="relative bg-white">
+        <div id="main-container" className="relative bg-white mt-24">
           {/* Input para cargar la imagen lateral */}
           <div className="mb-4">
             <input type="file" accept="image/*" onChange={handleImageUpload} />
