@@ -12,18 +12,16 @@ const AccidentDetailsForm: React.FC<AccidentDetailsFormProps> = ({ data }) => {
   const { fechaHora, lugar, descripcion } = data || { fechaHora: '', lugar: '', descripcion: '' };
   const [history, setHistory] = useState<string>('');
 
-  // Función para limpiar, separar y formatear fecha y hora
+  // Función para formatear la fecha y hora
   const formatDateTime = (dateTime: string) => {
     if (!dateTime) return '';
 
-    // Limpiar el texto no deseado
-    let cleanedDateTime = dateTime.replace('y Fecha:', '').trim();
+    // Verificar y formatear la fecha y hora si es necesario
+    const [datePart, timePart] = dateTime.split(' ');
+    if (!datePart || !timePart) return dateTime;
 
-    // Separar hora y fecha
-    const [time, date] = cleanedDateTime.split(' | ');
-
-    // Formatear fecha y hora en el orden correcto
-    return `${date} ${time}`;
+    const formattedDateTime = `${datePart} ${timePart}`;
+    return formattedDateTime;
   };
 
   return (
