@@ -22,54 +22,58 @@ interface CourseOfActionViewProps {
 }
 
 const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDataChange }) => {
-  // Si formData es null o undefined, mostrar un mensaje o manejar el caso
+  const tareasDinamicas = formData
+    ? Object.keys(formData)
+        .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
+        .map((key) => {
+          const index = parseInt(key.replace('tarea', ''));
+          return {
+            id: index,
+            tarea: formData[key],
+            subtarea: formData[`subtarea${index}`],
+            inicio: formData[`inicio${index}`],
+            fin: formData[`fin${index}`],
+            responsable: formData[`responsable${index}`],
+            cliente: formData[`cliente${index}`],
+            tipo: formData[`tipo${index}`],
+          };
+        })
+        .filter((tarea) => tarea.tarea)
+        .sort((a, b) => a.id - b.id)
+    : [];
+
+  const fechaInicioPropagada = formData?.inicio1;
+  const fechaFinPropagada = formData?.fin1;
+  const tipoPropagado = formData?.tipo1;
+
+  if (formData) {
+    tareasDinamicas.forEach((tarea) => {
+      tarea.inicio = tarea.inicio || fechaInicioPropagada;
+      tarea.fin = tarea.fin || fechaFinPropagada;
+      tarea.tipo = tarea.tipo || tipoPropagado;
+    });
+  }
+
+  const inicioUltimaFila = formData?.inicio6 || fechaInicioPropagada;
+  const finUltimaFila = formData?.fin6 || fechaFinPropagada;
+  const tipoUltimaFila = formData?.tipo5 || tipoPropagado;
+
+  useEffect(() => {
+    if (formData) {
+      const updatedData = {
+        ...formData,
+        tareasDinamicas,
+        inicioUltimaFila,
+        finUltimaFila,
+        tipoUltimaFila,
+      };
+      onDataChange(updatedData);
+    }
+  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
+
   if (!formData) {
     return <div>No hay datos disponibles</div>;
   }
-
-  const tareasDinamicas = Object.keys(formData)
-    .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
-    .map((key) => {
-      const index = parseInt(key.replace('tarea', ''));
-      return {
-        id: index,
-        tarea: formData[key],
-        subtarea: formData[`subtarea${index}`],
-        inicio: formData[`inicio${index}`],
-        fin: formData[`fin${index}`],
-        responsable: formData[`responsable${index}`],
-        cliente: formData[`cliente${index}`],
-        tipo: formData[`tipo${index}`],
-      };
-    })
-    .filter((tarea) => tarea.tarea)
-    .sort((a, b) => a.id - b.id);
-
-  const fechaInicioPropagada = formData.inicio1;
-  const fechaFinPropagada = formData.fin1;
-  const tipoPropagado = formData.tipo1;
-
-  tareasDinamicas.forEach((tarea) => {
-    tarea.inicio = tarea.inicio || fechaInicioPropagada;
-    tarea.fin = tarea.fin || fechaFinPropagada;
-    tarea.tipo = tarea.tipo || tipoPropagado;
-  });
-
-  const inicioUltimaFila = formData.inicio6 || fechaInicioPropagada;
-  const finUltimaFila = formData.fin6 || fechaFinPropagada;
-  const tipoUltimaFila = formData.tipo5 || tipoPropagado;
-
-  useEffect(() => {
-    const updatedData = {
-      ...formData,
-      tareasDinamicas,
-      inicioUltimaFila,
-      finUltimaFila,
-      tipoUltimaFila,
-    };
-
-    onDataChange(updatedData);
-  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
