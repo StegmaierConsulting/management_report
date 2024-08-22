@@ -1,6 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const InvestigationResponsible: React.FC = () => {
+interface InvestigationResponsibleProps {
+  onDataChange: (data: {
+    investigation: {
+      nombre: string;
+      cargo: string;
+      firma: string;
+    };
+    revision: {
+      nombre: string;
+      cargo: string;
+      firma: string;
+    };
+    gerente: {
+      nombre: string;
+      cargo: string;
+      firma: string;
+    };
+  }) => void;
+}
+
+const InvestigationResponsible: React.FC<InvestigationResponsibleProps> = ({ onDataChange }) => {
+  const [formData, setFormData] = useState({
+    investigation: {
+      nombre: '',
+      cargo: '',
+      firma: '',
+    },
+    revision: {
+      nombre: '',
+      cargo: '',
+      firma: '',
+    },
+    gerente: {
+      nombre: '',
+      cargo: '',
+      firma: '',
+    },
+  });
+
+  useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
+
+  const handleInputChange = (section: 'investigation' | 'revision' | 'gerente', field: 'nombre' | 'cargo' | 'firma', value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [section]: {
+        ...prevData[section],
+        [field]: value,
+      },
+    }));
+  };
+
   return (
     <div className="p-8 mx-32">
       <h2 className="text-2xl font-bold mb-6">16. RESPONSABLE INVESTIGACIÓN (*):</h2>
@@ -13,7 +65,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Nombre</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none" />
+            <textarea
+              value={formData.investigation.nombre}
+              onChange={(e) => handleInputChange('investigation', 'nombre', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -21,7 +77,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Cargo</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"/>
+            <textarea
+              value={formData.investigation.cargo}
+              onChange={(e) => handleInputChange('investigation', 'cargo', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -29,7 +89,12 @@ const InvestigationResponsible: React.FC = () => {
             <span>Firma</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-16 border-none focus:outline-none resize-none" placeholder="______________________________" />
+            <textarea
+              value={formData.investigation.firma}
+              onChange={(e) => handleInputChange('investigation', 'firma', e.target.value)}
+              className="w-full h-16 border-none focus:outline-none resize-none"
+              placeholder="______________________________"
+            />
           </div>
         </div>
       </div>
@@ -42,7 +107,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Nombre</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"/>
+            <textarea
+              value={formData.revision.nombre}
+              onChange={(e) => handleInputChange('revision', 'nombre', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -50,7 +119,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Cargo</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none" />
+            <textarea
+              value={formData.revision.cargo}
+              onChange={(e) => handleInputChange('revision', 'cargo', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -58,7 +131,12 @@ const InvestigationResponsible: React.FC = () => {
             <span>Firma</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-16 border-none focus:outline-none resize-none" placeholder="______________________________" />
+            <textarea
+              value={formData.revision.firma}
+              onChange={(e) => handleInputChange('revision', 'firma', e.target.value)}
+              className="w-full h-16 border-none focus:outline-none resize-none"
+              placeholder="______________________________"
+            />
           </div>
         </div>
       </div>
@@ -71,7 +149,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Nombre</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"/>
+            <textarea
+              value={formData.gerente.nombre}
+              onChange={(e) => handleInputChange('gerente', 'nombre', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -79,7 +161,11 @@ const InvestigationResponsible: React.FC = () => {
             <span>Cargo</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"/>
+            <textarea
+              value={formData.gerente.cargo}
+              onChange={(e) => handleInputChange('gerente', 'cargo', e.target.value)}
+              className="w-full h-12 border-none focus:outline-none text-[#0070c0] font-bold resize-none"
+            />
           </div>
         </div>
         <div className="flex flex-wrap mb-4">
@@ -87,7 +173,12 @@ const InvestigationResponsible: React.FC = () => {
             <span>Firma</span> : 
           </div>
           <div className="w-2/3">
-            <textarea className="w-full h-16 border-none focus:outline-none resize-none" placeholder="______________________________" />
+            <textarea
+              value={formData.gerente.firma}
+              onChange={(e) => handleInputChange('gerente', 'firma', e.target.value)}
+              className="w-full h-16 border-none focus:outline-none resize-none"
+              placeholder="______________________________"
+            />
           </div>
         </div>
       </div>

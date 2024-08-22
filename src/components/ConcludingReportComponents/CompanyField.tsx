@@ -1,13 +1,22 @@
 // CompanyField.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CompanyField: React.FC = () => {
+interface CompanyFieldProps {
+  onDataChange: (data: { companyName: string }) => void;
+}
+
+const CompanyField: React.FC<CompanyFieldProps> = ({ onDataChange }) => {
   const [companyName, setCompanyName] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyName(e.target.value);
   };
+
+  // Actualiza los datos en MainPage cada vez que companyName cambie
+  useEffect(() => {
+    onDataChange({ companyName });
+  }, [companyName, onDataChange]);
 
   return (
     <div className="border border-black my-4 mx-6">

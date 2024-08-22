@@ -13,9 +13,10 @@ export interface TableData {
 interface RootCauseAnalysisFormEditProps {
   data: TableData[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tableId: string, porqueIndex?: number) => void;
+  onDataChange: (updatedData: TableData[]) => void;
 }
 
-const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, handleChange }) => {
+const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, handleChange, onDataChange }) => {
   const inputRefs = useRef<(HTMLTextAreaElement | null)[][]>([]);
 
   useEffect(() => {
@@ -29,6 +30,24 @@ const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, han
       });
     });
   }, [data]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tableId: number, porqueIndex?: number) => {
+    const { name, value } = e.target;
+    const updatedData = data.map((table) => {
+      if (table.id === tableId) {
+        if (porqueIndex !== undefined) {
+          const updatedPorques = table.porques.map((porque, index) =>
+            index === porqueIndex ? value : porque
+          );
+          return { ...table, porques: updatedPorques };
+        } else {
+          return { ...table, [name]: value };
+        }
+      }
+      return table;
+    });
+    onDataChange(updatedData);
+  };
 
   const ordinalSuffix = (number: number) => {
     switch (number) {
@@ -68,7 +87,7 @@ const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, han
                       <textarea
                         className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                         value={table.inputText1 || ''}
-                        onChange={(e) => handleChange(e, table.id.toString())}
+                        onChange={(e) => handleInputChange(e, table.id)}
                         name="inputText1"
                         placeholder="Ingrese observación, causa inmediata o problema"
                         ref={(el) => {
@@ -92,7 +111,7 @@ const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, han
                       <textarea
                         className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                         value={table.inputText5 || ''}
-                        onChange={(e) => handleChange(e, table.id.toString())}
+                        onChange={(e) => handleInputChange(e, table.id)}
                         name="inputText5"
                         placeholder="Ingrese acción a incluir en plan de acción"
                         ref={(el) => {
@@ -114,7 +133,7 @@ const RootCauseAnalysis: React.FC<RootCauseAnalysisFormEditProps> = ({ data, han
                         <textarea
                           className="w-full p-2 border-none outline-none resize-none overflow-hidden bg-transparent"
                           value={porque}
-                          onChange={(e) => handleChange(e, table.id.toString(), porqueIndex)}
+                          onChange={(e) => handleInputChange(e, table.id, porqueIndex)}
                           name={`porque${porqueIndex + 1}`}
                           placeholder="Ingrese texto aquí"
                           ref={(el) => {

@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CostsTable: React.FC = () => {
+interface CostsTableProps {
+  onDataChange: (data: {
+    directCosts: { [key: string]: string };
+    indirectCosts: { [key: string]: string };
+    totalDirect: string;
+    totalIndirect: string;
+  }) => void;
+}
+
+const CostsTable: React.FC<CostsTableProps> = ({ onDataChange }) => {
   const [directCosts, setDirectCosts] = useState<{ [key: string]: string }>({
     repair: '',
     replacement: '',
@@ -29,11 +38,21 @@ const CostsTable: React.FC = () => {
     costs: { [key: string]: string }
   ) => {
     const { name, value } = e.target;
-    setCosts({ ...costs, [name]: value });
+    const updatedCosts = { ...costs, [name]: value };
+    setCosts(updatedCosts);
   };
 
   const totalDirect = calculateTotal(directCosts);
   const totalIndirect = calculateTotal(indirectCosts);
+
+  useEffect(() => {
+    onDataChange({
+      directCosts,
+      indirectCosts,
+      totalDirect,
+      totalIndirect,
+    });
+  }, [directCosts, indirectCosts, totalDirect, totalIndirect, onDataChange]);
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">

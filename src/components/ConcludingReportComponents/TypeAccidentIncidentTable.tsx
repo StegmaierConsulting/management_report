@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const TypeAccidentIncidentTable: React.FC = () => {
+interface TypeAccidentIncidentTableProps {
+  onDataChange: (data: { accidentChecks: any; incidentChecks: any }) => void;
+}
+
+const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ onDataChange }) => {
   // Estado para los checkboxes
   const [accidentChecks, setAccidentChecks] = useState({
     cbil: false,
@@ -19,12 +23,19 @@ const TypeAccidentIncidentTable: React.FC = () => {
 
   // Manejadores de cambio para los checkboxes
   const handleAccidentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAccidentChecks({ ...accidentChecks, [e.target.name]: e.target.checked });
+    const newAccidentChecks = { ...accidentChecks, [e.target.name]: e.target.checked };
+    setAccidentChecks(newAccidentChecks);
   };
 
   const handleIncidentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIncidentChecks({ ...incidentChecks, [e.target.name]: e.target.checked });
+    const newIncidentChecks = { ...incidentChecks, [e.target.name]: e.target.checked };
+    setIncidentChecks(newIncidentChecks);
   };
+
+  // Efecto para actualizar el estado en MainPage cada vez que cambien los checks
+  useEffect(() => {
+    onDataChange({ accidentChecks, incidentChecks });
+  }, [accidentChecks, incidentChecks, onDataChange]);
 
   return (
     <div className='my-6 mx-6'>

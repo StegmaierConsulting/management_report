@@ -1,8 +1,18 @@
-// ThirdPartyIdentificationTable.tsx
+import React, { useState, useEffect } from 'react';
 
-import React, { useState } from 'react';
+interface ThirdPartyIdentificationTableProps {
+  onDataChange: (data: {
+    nombre: string;
+    rut: string;
+    edad: string;
+    lesiones: string;
+    tipoVehiculo: string;
+    danosMateriales: string;
+    patente: string;
+  }) => void;
+}
 
-const ThirdPartyIdentificationTable: React.FC = () => {
+const ThirdPartyIdentificationTable: React.FC<ThirdPartyIdentificationTableProps> = ({ onDataChange }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     rut: '',
@@ -15,8 +25,13 @@ const ThirdPartyIdentificationTable: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedFormData = { ...formData, [name]: value };
+    setFormData(updatedFormData);
   };
+
+  useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
 
   return (
     <div className="border border-gray-300 p-4 mx-20 mb-6 border-dotted">

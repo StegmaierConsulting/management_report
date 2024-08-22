@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LogoUploaderProps {
   leftLogo: string | null;
   rightLogo: string | null;
   setLeftLogo: (logo: string | null) => void;
   setRightLogo: (logo: string | null) => void;
+  onDataChange: (data: { leftLogo: string | null; rightLogo: string | null }) => void; // Añadido
 }
 
-const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLeftLogo, setRightLogo }) => {
+const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLeftLogo, setRightLogo, onDataChange }) => {
   const [leftLogoUploaded, setLeftLogoUploaded] = useState(false);
   const [rightLogoUploaded, setRightLogoUploaded] = useState(false);
 
@@ -40,6 +41,10 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ leftLogo, rightLogo, setLef
       reader.readAsDataURL(files[0]);
     }
   };
+
+  useEffect(() => {
+    onDataChange({ leftLogo, rightLogo });
+  }, [leftLogo, rightLogo, onDataChange]);
 
   return (
     <div className="flex justify-between items-start p-4">

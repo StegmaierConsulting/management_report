@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const PersonDetailsTable: React.FC = () => {
+interface PersonDetailsTableProps {
+  onDataChange: (data: any) => void;
+}
+
+const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange }) => {
   const [formData, setFormData] = useState([
     {
       nombre: '',
@@ -49,6 +53,11 @@ const PersonDetailsTable: React.FC = () => {
     const updatedFormData = formData.filter((_, i) => i !== index);
     setFormData(updatedFormData);
   };
+
+  // Usar useEffect para enviar los datos actualizados al componente padre
+  useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
 
   return (
     <div>

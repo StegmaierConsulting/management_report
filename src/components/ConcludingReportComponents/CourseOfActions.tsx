@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const columnSizes = [
   '6.71px', '27.84px', '27.84px', '14.40px', '14.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
@@ -16,7 +16,12 @@ export interface DatosExtraidos {
   [key: string]: any; // Para permitir propiedades dinámicas
 }
 
-const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }) => {
+interface CourseOfActionViewProps {
+  formData: DatosExtraidos;
+  onDataChange: (updatedData: DatosExtraidos) => void;
+}
+
+const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDataChange }) => {
   if (!formData) {
     return <div>No hay datos disponibles</div>;
   }
@@ -55,6 +60,21 @@ const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }
   const inicioUltimaFila = formData.inicio6 || fechaInicioPropagada;
   const finUltimaFila = formData.fin6 || fechaFinPropagada;
   const tipoUltimaFila = formData.tipo5 || tipoPropagado;
+
+  // useEffect para manejar la propagación de cambios
+  useEffect(() => {
+    // Crear una copia de formData para actualizar con tareasDinamicas
+    const updatedData = {
+      ...formData,
+      tareasDinamicas,
+      inicioUltimaFila,
+      finUltimaFila,
+      tipoUltimaFila,
+    };
+    
+    // Llamar a onDataChange con los datos actualizados
+    onDataChange(updatedData);
+  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
@@ -195,8 +215,8 @@ const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }
               <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
               <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
               <td style={{ width: columnSizes[10] }} className="border border-gray-300">
-                <span className="w-full h-full text-center">{tarea.tipo}</span>
-              </td>
+              <span className="w-full h-full text-center">{tarea.tipo}</span>
+            </td>
             </tr>
           ))}
           {/* Última fila fija (estática) */}
@@ -232,4 +252,3 @@ const CourseOfActionView: React.FC<{ formData: DatosExtraidos }> = ({ formData }
 };
 
 export default CourseOfActionView;
-

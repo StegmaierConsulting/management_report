@@ -1,5 +1,3 @@
-// ConclusionsForm.tsx
-
 import React, { useState, useRef, useEffect } from 'react';
 
 interface ConclusionsFormProps {
@@ -7,7 +5,11 @@ interface ConclusionsFormProps {
   conclusionText: string;
 }
 
-const ConclusionsForm: React.FC = () => {
+interface ConclusionsFormComponentProps {
+  onDataChange: (data: ConclusionsFormProps) => void;
+}
+
+const ConclusionsForm: React.FC<ConclusionsFormComponentProps> = ({ onDataChange }) => {
   const [formData, setFormData] = useState<ConclusionsFormProps>({
     title: '11. CONCLUSIONES:',
     conclusionText: '',
@@ -21,6 +23,10 @@ const ConclusionsForm: React.FC = () => {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [formData.conclusionText]);
+
+  useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;

@@ -1,8 +1,10 @@
-// DamagedEquipmentTable.tsx
+import React, { useState, useEffect } from 'react';
 
-import React, { useState } from 'react';
+interface DamagedEquipmentTableProps {
+  onDataChange: (data: any) => void;
+}
 
-const DamagedEquipmentTable: React.FC = () => {
+const DamagedEquipmentTable: React.FC<DamagedEquipmentTableProps> = ({ onDataChange }) => {
   const [formData, setFormData] = useState({
     equipo: '',
     baja: '',
@@ -19,8 +21,13 @@ const DamagedEquipmentTable: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedFormData = { ...formData, [name]: value };
+    setFormData(updatedFormData);
   };
+
+  useEffect(() => {
+    onDataChange(formData); // Envía los datos actualizados al componente padre
+  }, [formData, onDataChange]);
 
   return (
     <div className="border border-dotted border-gray-300 p-4 mx-6 mb-6">

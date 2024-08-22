@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface AccidentDetailsFormProps {
   data: {
     fechaHora: string;
     lugar: string;
     descripcion: string;
-  }
+  };
+  onDataChange: (updatedData: { history: string }) => void; // Agregar onDataChange prop
 }
 
-const AccidentDetailsForm: React.FC<AccidentDetailsFormProps> = ({ data }) => {
+const AccidentDetailsForm: React.FC<AccidentDetailsFormProps> = ({ data, onDataChange }) => {
   const { fechaHora, lugar, descripcion } = data || { fechaHora: '', lugar: '', descripcion: '' };
   const [history, setHistory] = useState<string>('');
 
@@ -23,6 +24,10 @@ const AccidentDetailsForm: React.FC<AccidentDetailsFormProps> = ({ data }) => {
     const formattedDateTime = `${datePart} ${timePart}`;
     return formattedDateTime;
   };
+
+  useEffect(() => {
+    onDataChange({ history });
+  }, [history, onDataChange]);
 
   return (
     <div className="border border-gray-300 border-dotted p-6 mx-20 mb-6">

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface ImagesDisplayProps {
   imageUrls: string[];
+  onDataChange: (data: { imageUrls: string[] }) => void;
 }
 
-const ImagesDisplay: React.FC<ImagesDisplayProps> = ({ imageUrls }) => {
+const ImagesDisplay: React.FC<ImagesDisplayProps> = ({ imageUrls, onDataChange }) => {
+  
+  useEffect(() => {
+    onDataChange({ imageUrls });
+  }, [imageUrls, onDataChange]);
+
   return (
     <div className="p-4 mx-16 mb-4">
       <h2 className="text-lg font-bold mb-4">15. FOTOS EXPLICATIVAS:</h2>

@@ -21,6 +21,7 @@ import AuthComponent from '@/auth/authComponent';
 import { firestore } from '@/config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import LogoUploader from '@/components/ConcludingReportComponents/LogoUploader';
+import AuthSaveButton from '@/components/AuthSaveButton';
 
 const MainPage: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(true);
@@ -36,7 +37,22 @@ const MainPage: React.FC = () => {
   // State for logos
   const [leftLogo, setLeftLogo] = useState<string | null>(null);
   const [rightLogo, setRightLogo] = useState<string | null>(null);
-  const [sideImage, setSideImage] = useState<string | null>(null); // Nuevo estado para la imagen lateral
+  const [sideImage, setSideImage] = useState<string | null>(null);
+
+  // State to collect data from components
+  const [companyFieldData, setCompanyFieldData] = useState<any>({});
+  const [typeAccidentIncidentTableData, setTypeAccidentIncidentTableData] = useState<any>({});
+  const [personDetailsData, setPersonDetailsData] = useState<any>({});
+  const [damagedEquipmentData, setDamagedEquipmentData] = useState<any>({});
+  const [thirdPartyIdentificationData, setThirdPartyIdentificationData] = useState<any>({});
+  const [accidentDetailsData, setAccidentDetailsData] = useState<any>({});
+  const [rootCauseAnalysisData, setRootCauseAnalysisData] = useState<any>({});
+  const [descriptionAccidentIncidentData, setDescriptionAccidentIncidentData] = useState<any>({});
+  const [conclusionsFormData, setConclusionsFormData] = useState<any>({});
+  const [inmediateActionsFormData, setInmediateActionsFormData] = useState<any>({});
+  const [courseOfActionsData, setCourseOfActionsData] = useState<any>({});
+  const [costsTableData, setCostsTableData] = useState<any>({});
+  const [investigationResponsibleData, setInvestigationResponsibleData] = useState<any>({});
 
   const page1Ref = useRef<HTMLDivElement>(null);
   const page2Ref = useRef<HTMLDivElement>(null);
@@ -240,7 +256,7 @@ const MainPage: React.FC = () => {
             <button onClick={handleSearch} className="p-2 bg-blue-500 text-white rounded ml-2">
               Buscar
             </button>
-            <button onClick={handleExportPdf} className="p-2 bg-blue-500 text-white rounded ml-2">
+            <button onClick={handleExportPdf} className="p-2 bg-blue-500 text-white rounded ml-2 no-print">
               Exportar a PDF
             </button>
           </div>
@@ -253,12 +269,13 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
                 <h1 className="text-3xl text-center my-8 font-bold underline">INFORME DE ACCIDENTE/INCIDENTE</h1>
-                <CompanyField />
-                <TypeAccidentIncidentTable />
-                <PersonDetailsTable />
-                <DamagedEquipmentTable />
+                <CompanyField onDataChange={setCompanyFieldData} />
+                <TypeAccidentIncidentTable onDataChange={setTypeAccidentIncidentTableData} />
+                <PersonDetailsTable onDataChange={setPersonDetailsData} />
+                <DamagedEquipmentTable onDataChange={setDamagedEquipmentData} />
               </div>
               <div ref={page2Ref}>
                 <LogoUploader
@@ -266,9 +283,10 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <ThirdPartyIdentificationTable />
-                <AccidentDetailsForm data={flashData} />
+                <ThirdPartyIdentificationTable onDataChange={setThirdPartyIdentificationData} />
+                <AccidentDetailsForm data={flashData} onDataChange={setAccidentDetailsData} />
               </div>
               <div ref={page3Ref}>
                 <LogoUploader
@@ -276,8 +294,13 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <RootCauseAnalysis data={rootCauseData} handleChange={() => { }} />
+                <RootCauseAnalysis
+                  data={rootCauseData}
+                  handleChange={(data) => setRootCauseAnalysisData(data)}
+                  onDataChange={setRootCauseAnalysisData} // Asegúrate de incluir onDataChange aquí
+                />
               </div>
               <div ref={page4Ref}>
                 <LogoUploader
@@ -285,9 +308,10 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <DescriptionAccidentIncident />
-                <ConclusionsForm />
+                <DescriptionAccidentIncident onDataChange={setDescriptionAccidentIncidentData} />
+                <ConclusionsForm onDataChange={setConclusionsFormData} />
               </div>
               <div ref={page5Ref}>
                 <LogoUploader
@@ -295,8 +319,9 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <InmediateActions formData={inmediateActionsData} />
+                <InmediateActions formData={inmediateActionsData} onDataChange={setInmediateActionsFormData} />
               </div>
               <div ref={page6Ref}>
                 <LogoUploader
@@ -304,8 +329,9 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <CourseOfActions formData={results.find(r => r.collectionName === 'CourseOfAction')} />
+                <CourseOfActions formData={results.find(r => r.collectionName === 'CourseOfAction')} onDataChange={setCourseOfActionsData} />
               </div>
               <div ref={page7Ref}>
                 <LogoUploader
@@ -313,8 +339,9 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <CostsTable />
+                <CostsTable onDataChange={setCostsTableData} />
               </div>
               <div ref={page8Ref}>
                 <LogoUploader
@@ -322,8 +349,9 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <ImagesDisplay imageUrls={imageLinks} />
+                <ImagesDisplay imageUrls={imageLinks} onDataChange={() => { }} />
               </div>
               <div ref={page9Ref}>
                 <LogoUploader
@@ -331,8 +359,33 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
+                  onDataChange={() => { }}
                 />
-                <InvestigationResponsible />
+                <InvestigationResponsible onDataChange={setInvestigationResponsibleData} />
+              </div>
+
+              {/* Integración del botón de guardado */}
+              <div className="flex justify-center my-8 no-print">
+                <AuthSaveButton
+                  data={{
+                    companyFieldData,
+                    typeAccidentIncidentTableData,
+                    personDetailsData,
+                    damagedEquipmentData,
+                    thirdPartyIdentificationData,
+                    accidentDetailsData,
+                    rootCauseAnalysisData,
+                    descriptionAccidentIncidentData,
+                    conclusionsFormData,
+                    inmediateActionsFormData,
+                    courseOfActionsData,
+                    costsTableData,
+                    investigationResponsibleData,
+                    flashData,
+                    imageLinks,
+                  }}
+                  collectionName="YourCollectionName"
+                />
               </div>
             </>
           ) : (

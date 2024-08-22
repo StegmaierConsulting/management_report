@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export interface DatosExtraidos {
   id: string;
@@ -25,9 +25,10 @@ export interface DatosExtraidos {
 
 interface InmediateActionsProps {
   formData?: DatosExtraidos;
+  onDataChange?: (updatedData: DatosExtraidos) => void; // Prop para manejar los cambios en los datos
 }
 
-const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
+const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataChange }) => {
   if (!formData) {
     return <div>No se han encontrado datos de acciones inmediatas.</div>;
   }
@@ -40,12 +41,19 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
     '19.33px', '19.33px', '19.33px', '20px', '38.67px', '136px', '107px', '110px', '80px', '103px', '109px'
   ];
 
+  // Este useEffect propaga los datos iniciales o cualquier cambio en formData
+  useEffect(() => {
+    if (onDataChange && formData) {
+      onDataChange(formData);
+    }
+  }, [formData, onDataChange]);
+
   return (
     <div className="overflow-x-auto mx-16 mb-4">
       <h2 className="text-2xl font-bold mb-4">12. ACCIONES INMEDIATAS:</h2>
       <table id="inmediateActionsTable" className="table-fixed min-w-full divide-y divide-gray-200">
         <tbody className="bg-white divide-y divide-gray-200">
-          {/* First row */}
+          {/* Primera fila */}
           <tr>
             <td colSpan={10} className="bg-[#00B0F0]">
               <div className="flex items-center w-full">
@@ -54,7 +62,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               </div>
             </td>
           </tr>
-          {/* Second row */}
+          {/* Segunda fila */}
           <tr style={{ height: rowSizes[1] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border-none" colSpan={3}>
               <div className="flex items-center w-full">
@@ -82,7 +90,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
             </td>
             <td colSpan={2} className="border-none"></td>
           </tr>
-          {/* Third row */}
+          {/* Tercera fila */}
           <tr style={{ height: rowSizes[2] }}>
             <td colSpan={3} className="border-none"></td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
@@ -101,11 +109,11 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
             </td>
             <td colSpan={2} className="border-none"></td>
           </tr>
-          {/* Fourth row */}
+          {/* Cuarta fila */}
           <tr style={{ height: rowSizes[3] }}>
             <td colSpan={10} className="border-none"></td>
           </tr>
-          {/* Fifth row */}
+          {/* Quinta fila */}
           <tr style={{ height: rowSizes[4] }} className='bg-[#00B0F0]'>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">#</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-center align-middle">Tarea</td>
@@ -118,7 +126,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">Tipo ACC-INC</td>
           </tr>
-          {/* Sixth row */}
+          {/* Sexta fila */}
           <tr style={{ height: rowSizes[5] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">1</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Comunicar lo acontecido a Jefatura Directa</td>
@@ -141,7 +149,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo1}</span>
             </td>
           </tr>
-          {/* Seventh row */}
+          {/* Séptima fila */}
           <tr style={{ height: rowSizes[6] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">2</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Informar Incidente y su clasificación a la Dirección</td>
@@ -164,7 +172,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               <span className="w-full h-full text-center">{formData.tipo2}</span>
             </td>
           </tr>
-          {/* Eighth row */}
+          {/* Octava fila */}
           <tr style={{ height: rowSizes[7] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">3</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Enviar recopilación de antecedentes</td>
@@ -187,7 +195,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo3}</span>
             </td>
           </tr>
-          {/* Ninth row */}
+          {/* Novena fila */}
           <tr style={{ height: rowSizes[8] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">4</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Informar Incidente Ocurrido a Jefatura CGE</td>
@@ -210,7 +218,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               <span className="w-full h-full text-center">{formData.tipo4}</span>
             </td>
           </tr>
-          {/* Tenth row */}
+          {/* Décima fila */}
           <tr style={{ height: rowSizes[9] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">5</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Generar Reporte Flash vía WhatsApp a Jefe de Área CGE y HSEQ</td>
@@ -233,7 +241,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData }) => {
               <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.tipo5}</span>
             </td>
           </tr>
-          {/* Eleventh row */}
+          {/* Undécima fila */}
           <tr style={{ height: rowSizes[10] }}>
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">6</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Iniciar Proceso de Investigación Preliminar de Incidentes</td>
