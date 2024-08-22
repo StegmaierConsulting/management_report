@@ -91,10 +91,10 @@ const MainPage: React.FC = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Ocultar inputs de carga de logos antes de generar el PDF
-    const logoInputs = document.querySelectorAll('.logo-input');
-    logoInputs.forEach(input => {
-      (input as HTMLInputElement).style.display = 'none';
+    // Ocultar inputs de carga de logos y botones antes de generar el PDF
+    const elementsToHide = document.querySelectorAll('.logo-input, .no-print');
+    elementsToHide.forEach(element => {
+      (element as HTMLElement).style.display = 'none';
     });
 
     const inputElements = document.querySelectorAll(
@@ -185,9 +185,9 @@ const MainPage: React.FC = () => {
       }
     });
 
-    // Restaurar la visibilidad de los inputs de carga de logos
-    logoInputs.forEach(input => {
-      (input as HTMLInputElement).style.display = '';
+    // Restaurar la visibilidad de los inputs de carga de logos y botones
+    elementsToHide.forEach(element => {
+      (element as HTMLElement).style.display = '';
     });
   };
 
