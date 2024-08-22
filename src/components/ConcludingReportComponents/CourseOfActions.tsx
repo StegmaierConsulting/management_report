@@ -17,11 +17,16 @@ export interface DatosExtraidos {
 }
 
 interface CourseOfActionViewProps {
-  formData: DatosExtraidos;
+  formData: DatosExtraidos | null; // Permitir que formData sea null
   onDataChange: (updatedData: DatosExtraidos) => void;
 }
 
 const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDataChange }) => {
+  // Si formData es null o undefined, mostrar un mensaje o manejar el caso
+  if (!formData) {
+    return <div>No hay datos disponibles</div>;
+  }
+
   const tareasDinamicas = Object.keys(formData)
     .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
     .map((key) => {
@@ -54,23 +59,17 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
   const finUltimaFila = formData.fin6 || fechaFinPropagada;
   const tipoUltimaFila = formData.tipo5 || tipoPropagado;
 
-  // Este useEffect se llama siempre, asegurando que no esté condicionado
   useEffect(() => {
-    if (formData) {
-      const updatedData = {
-        ...formData,
-        tareasDinamicas,
-        inicioUltimaFila,
-        finUltimaFila,
-        tipoUltimaFila,
-      };
-      onDataChange(updatedData);
-    }
-  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
+    const updatedData = {
+      ...formData,
+      tareasDinamicas,
+      inicioUltimaFila,
+      finUltimaFila,
+      tipoUltimaFila,
+    };
 
-  if (!formData) {
-    return <div>No hay datos disponibles</div>;
-  }
+    onDataChange(updatedData);
+  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
