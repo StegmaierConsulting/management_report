@@ -384,7 +384,7 @@ const MainPage: React.FC = () => {
                     flashData,
                     imageLinks,
                   }}
-                  collectionName="YourCollectionName"
+                  collectionName="FinalReport"
                 />
               </div>
             </>
