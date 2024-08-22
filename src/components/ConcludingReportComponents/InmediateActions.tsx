@@ -25,14 +25,10 @@ export interface DatosExtraidos {
 
 interface InmediateActionsProps {
   formData?: DatosExtraidos;
-  onDataChange?: (updatedData: DatosExtraidos) => void; // Prop para manejar los cambios en los datos
+  onDataChange?: (updatedData: DatosExtraidos) => void;
 }
 
 const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataChange }) => {
-  if (!formData) {
-    return <div>No se han encontrado datos de acciones inmediatas.</div>;
-  }
-
   const columnSizes = [
     '6.71px', '27.84px', '14.40px', '14.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
   ];
@@ -47,6 +43,11 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
       onDataChange(formData);
     }
   }, [formData, onDataChange]);
+
+  // Si no hay datos, se muestra un mensaje.
+  if (!formData) {
+    return <div>No se han encontrado datos de acciones inmediatas.</div>;
+  }
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">

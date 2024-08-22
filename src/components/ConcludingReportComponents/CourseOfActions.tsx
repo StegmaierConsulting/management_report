@@ -26,7 +26,6 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
     return <div>No hay datos disponibles</div>;
   }
 
-  // Filtrar y ordenar las tareas dinámicas excluyendo las tareas estáticas (si las hay)
   const tareasDinamicas = Object.keys(formData)
     .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
     .map((key) => {
@@ -42,10 +41,9 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
         tipo: formData[`tipo${index}`],
       };
     })
-    .filter((tarea) => tarea.tarea) // Filtrar solo las filas con tarea
-    .sort((a, b) => a.id - b.id); // Ordenar por el número de tarea
+    .filter((tarea) => tarea.tarea)
+    .sort((a, b) => a.id - b.id);
 
-  // Propagar fechas y tipo ACC-INC si están vacías
   const fechaInicioPropagada = formData.inicio1;
   const fechaFinPropagada = formData.fin1;
   const tipoPropagado = formData.tipo1;
@@ -56,14 +54,11 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
     tarea.tipo = tarea.tipo || tipoPropagado;
   });
 
-  // Propagar fechas y tipo en la última fila estática (Reportar Avances de Plan de Acción)
   const inicioUltimaFila = formData.inicio6 || fechaInicioPropagada;
   const finUltimaFila = formData.fin6 || fechaFinPropagada;
   const tipoUltimaFila = formData.tipo5 || tipoPropagado;
 
-  // useEffect para manejar la propagación de cambios
   useEffect(() => {
-    // Crear una copia de formData para actualizar con tareasDinamicas
     const updatedData = {
       ...formData,
       tareasDinamicas,
@@ -71,8 +66,7 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
       finUltimaFila,
       tipoUltimaFila,
     };
-    
-    // Llamar a onDataChange con los datos actualizados
+
     onDataChange(updatedData);
   }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
 
@@ -215,8 +209,8 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
               <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
               <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
               <td style={{ width: columnSizes[10] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{tarea.tipo}</span>
-            </td>
+                <span className="w-full h-full text-center">{tarea.tipo}</span>
+              </td>
             </tr>
           ))}
           {/* Última fila fija (estática) */}
