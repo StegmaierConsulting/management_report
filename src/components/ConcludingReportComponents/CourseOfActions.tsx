@@ -22,10 +22,6 @@ interface CourseOfActionViewProps {
 }
 
 const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDataChange }) => {
-  if (!formData) {
-    return <div>No hay datos disponibles</div>;
-  }
-
   const tareasDinamicas = Object.keys(formData)
     .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
     .map((key) => {
@@ -58,17 +54,23 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
   const finUltimaFila = formData.fin6 || fechaFinPropagada;
   const tipoUltimaFila = formData.tipo5 || tipoPropagado;
 
+  // Este useEffect se llama siempre, asegurando que no esté condicionado
   useEffect(() => {
-    const updatedData = {
-      ...formData,
-      tareasDinamicas,
-      inicioUltimaFila,
-      finUltimaFila,
-      tipoUltimaFila,
-    };
-
-    onDataChange(updatedData);
+    if (formData) {
+      const updatedData = {
+        ...formData,
+        tareasDinamicas,
+        inicioUltimaFila,
+        finUltimaFila,
+        tipoUltimaFila,
+      };
+      onDataChange(updatedData);
+    }
   }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
+
+  if (!formData) {
+    return <div>No hay datos disponibles</div>;
+  }
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
