@@ -232,7 +232,7 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
               <span className="w-full h-full text-center">{finUltimaFila}</span>
             </td>
             <td style={{ width: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.responsable5}</span>
+              <span className="w-full h-full text-center">{formData.responsable6}</span>
             </td>
             <td style={{ width: columnSizes[6] }} className="border border-gray-300">
               <span className="w-full h-full text-center">{formData.cliente5}</span>
@@ -251,3 +251,4 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
 };
 
 export default CourseOfActionView;
+
