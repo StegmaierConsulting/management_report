@@ -71,6 +71,7 @@ const MainPage: React.FC = () => {
 
     const forms: any[] = [];
     let images: string[] = [];
+    let rootCauseTables: TableData[] = []; // Array para almacenar las tablas de RootCauseAnalysis
 
     for (const collectionName of collectionNames) {
       const collectionPath = `USERAUTH/${selectedEmpresa}/${collectionName}`;
@@ -81,9 +82,23 @@ const MainPage: React.FC = () => {
         const data = doc.data();
 
         if (collectionName === 'RootCauseAnalysis') {
-          const tables = data;
-          if (tables && tables['0']) {
-            setRootCauseData([tables['0']]);
+          // Verifica que los datos sean un mapa (map) con múltiples entradas, como lo has descrito
+          if (data) {
+            // Recorre todas las claves dentro del documento para extraer las tablas
+            Object.keys(data).forEach((key) => {
+              if (key !== 'empresaGuardado' && key !== 'numeroDocumento' && key !== 'timestamp' && key !== 'usuario') {
+                const table = data[key];
+                rootCauseTables.push({
+                  id: table.id || 0,
+                  inputText1: table.inputText1 || '',
+                  inputText2: table.inputText2 || '',
+                  inputText3: table.inputText3 || '',
+                  inputText4: table.inputText4 || '',
+                  inputText5: table.inputText5 || '',
+                  porques: table.porques || [''],
+                });
+              }
+            });
           }
         } else if (collectionName === 'InmediateActions') {
           setInmediateActionsData(data);
@@ -100,7 +115,9 @@ const MainPage: React.FC = () => {
 
     setResults(forms);
     setImageLinks(images);
+    setRootCauseData(rootCauseTables); // Actualizar el estado con todas las tablas
   };
+
 
   const handleExportPdf = async () => {
     const doc = new jsPDF('portrait');
@@ -299,8 +316,9 @@ const MainPage: React.FC = () => {
                 <RootCauseAnalysis
                   data={rootCauseData}
                   handleChange={(data) => setRootCauseAnalysisData(data)}
-                  onDataChange={setRootCauseAnalysisData} // Asegúrate de incluir onDataChange aquí
+                  onDataChange={setRootCauseAnalysisData}
                 />
+
               </div>
               <div ref={page4Ref}>
                 <LogoUploader
