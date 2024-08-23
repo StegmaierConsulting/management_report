@@ -242,4 +242,3 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
 };
 
 export default CourseOfActionView;
-
