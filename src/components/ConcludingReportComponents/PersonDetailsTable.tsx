@@ -19,6 +19,9 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
       lugarAtencion: '',
       hospitalizacion: '',
       testigo: '',
+      areaTrabajoFinal: '', // Nuevo campo
+      rutFinal: '',         // Nuevo campo
+      cargoFinal: '',       // Nuevo campo
     },
   ]);
 
@@ -45,6 +48,9 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
         lugarAtencion: '',
         hospitalizacion: '',
         testigo: '',
+        areaTrabajoFinal: '', // Nuevo campo
+        rutFinal: '',         // Nuevo campo
+        cargoFinal: '',       // Nuevo campo
       },
     ]);
   };
@@ -54,7 +60,6 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
     setFormData(updatedFormData);
   };
 
-  // Usar useEffect para enviar los datos actualizados al componente padre
   useEffect(() => {
     onDataChange(formData);
   }, [formData, onDataChange]);
@@ -247,6 +252,46 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                     type="text"
                     name="testigo"
                     value={person.testigo}
+                    onChange={(e) => handleInputChange(e, index)}
+                    className="w-full p-1 border-b border-gray-300 focus:outline-none text-[#0070c0] font-bold"
+                  />
+                </td>
+              </tr>
+              {/* Nuevos campos añadidos */}
+              <tr className="border-t border-dotted border-gray-300">
+                <td className="p-2 font-semibold">Área de trabajo</td>
+                <td className="p-2">:</td>
+                <td className="p-2">
+                  <input
+                    type="text"
+                    name="areaTrabajoFinal"
+                    value={person.areaTrabajoFinal}
+                    onChange={(e) => handleInputChange(e, index)}
+                    className="w-full p-1 border-b border-gray-300 focus:outline-none text-[#0070c0] font-bold"
+                  />
+                </td>
+              </tr>
+              <tr className="border-t border-dotted border-gray-300">
+                <td className="p-2 font-semibold">Rut</td>
+                <td className="p-2">:</td>
+                <td className="p-2">
+                  <input
+                    type="text"
+                    name="rutFinal"
+                    value={person.rutFinal}
+                    onChange={(e) => handleInputChange(e, index)}
+                    className="w-full p-1 border-b border-gray-300 focus:outline-none text-[#0070c0] font-bold"
+                  />
+                </td>
+              </tr>
+              <tr className="border-t border-dotted border-gray-300">
+                <td className="p-2 font-semibold">Cargo</td>
+                <td className="p-2">:</td>
+                <td className="p-2">
+                  <input
+                    type="text"
+                    name="cargoFinal"
+                    value={person.cargoFinal}
                     onChange={(e) => handleInputChange(e, index)}
                     className="w-full p-1 border-b border-gray-300 focus:outline-none text-[#0070c0] font-bold"
                   />
