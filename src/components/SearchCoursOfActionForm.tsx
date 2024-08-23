@@ -6,7 +6,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CourseOfActionEdit, { DatosExtraidos } from '@/components/CourseOfActionEdit';
 
-
 const SearchForms: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string | Date | null>(null);
   const [searchBy, setSearchBy] = useState<'numeroDocumento' | 'timestamp'>('numeroDocumento');
@@ -45,9 +44,14 @@ const SearchForms: React.FC = () => {
       const forms: DatosExtraidos[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data() as Omit<DatosExtraidos, 'id'>;
+
+        // Verificar y asignar todas las propiedades requeridas
         forms.push({
           ...data,
-          id: doc.id
+          id: doc.id,
+          numeroDocumento: data.numeroDocumento || '', // Proporciona un valor predeterminado si es necesario
+          empresa: selectedEmpresa, // Utiliza el valor de la empresa seleccionada
+          timestamp: data.timestamp ? data.timestamp.toDate() : new Date(), // Proporciona una fecha predeterminada si es necesario
         });
       });
       setResults(forms);

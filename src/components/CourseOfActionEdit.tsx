@@ -1,57 +1,85 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { doc, setDoc } from 'firebase/firestore';
 import { firestore } from '@/config/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 import ExportButton from '@/components/ExportButtonTable';
 
+
 const columnSizes = [
-  '6.71px', '27.84px', '27.84px', '14.40px', '14.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
+  '6.71px', '30.84px', '30.84px', '20.40px', '20.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
 ];
 
 const rowSizes = [
   '19.33px', '19.33px', '19.33px', '20px', '38.67px', '136px', '107px', '110px', '80px', '103px'
 ];
 
-export interface DatosExtraidos {
-  mainInput: string | number | readonly string[] | undefined;
-  id: string;
-  numeroDocumento: string;
-  timestamp: Date;
-  tipo1: string;
-  tipo2: string;
-  tipo3: string;
-  tipo4: string;
-  tipo5: string;
-  subtarea1: string;
-  subtarea2: string;
-  subtarea3: string;
-  subtarea4: string;
-  subtarea5: string;
-  responsable1: string;
-  responsable2: string;
-  responsable3: string;
-  responsable4: string;
-  responsable5: string;
-  cliente1: string;
-  cliente2: string;
-  cliente3: string;
-  cliente4: string;
-  cliente5: string;
-  inicio1: string;
-  inicio2: string;
-  inicio3: string;
-  inicio4: string;
-  inicio5: string;
-  inicio6: string;
-  fin1: string;
-  fin2: string;
-  fin3: string;
-  fin4: string;
-  fin5: string;
-  fin6: string;
+export interface FormValues {
+  mainInput?: string;
+  inicio1?: string;
+  fin1?: string;
+  medidasCorrectivas?: string;
+  subtarea1?: string;
+  responsable1?: string;
+  cliente1?: string;
+  tipo1?: string;
+  [key: string]: any;
 }
 
-const CourseOfActionEdit: React.FC<{ formData: DatosExtraidos; selectedEmpresa: string; handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void }> = ({ formData, selectedEmpresa, handleChange }) => {
-  const inputRefs = useRef<(HTMLTextAreaElement | null)[][]>([[], [], [], [], [], [], []]);
+export interface DatosExtraidos extends FormValues {
+  id: string;
+  numeroDocumento: string;
+  empresa: string;
+  timestamp: Date;
+}
+
+interface CourseOfActionEditProps {
+  formData: DatosExtraidos | null;
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  selectedEmpresa: string;
+}
+
+const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handleChange, selectedEmpresa }) => {
+  const [formValues, setFormValues] = useState<FormValues>(formData || {});
+  const [rows, setRows] = useState<{ tarea: string; subtarea: string; inicio: string; fin: string; responsable: string; cliente: string; tipo: string; id: string; }[]>([]);
+  const inputRefs = useRef<(HTMLTextAreaElement | null)[][]>([]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, key: string) => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [key]: e.target.value,
+    }));
+    handleChange(e);
+  };
+
+  const handleSave = async () => {
+    if (formData?.id && formData?.empresa && formData?.numeroDocumento) {
+      const docRef = doc(firestore, `USERAUTH/${formData.empresa}/CourseOfAction/${formData.numeroDocumento}`);
+      try {
+        await setDoc(docRef, { ...formValues }, { merge: true });
+        alert('Documento actualizado exitosamente');
+      } catch (error) {
+        alert('Error al actualizar el documento: ' + error);
+      }
+    } else {
+      alert('No se ha proporcionado un ID, empresa o número de documento válido para actualizar el documento.');
+    }
+  };
+
+  const addNewRow = () => {
+    const nextIndex = rows.length + 1;
+    setRows((prevRows) => [
+      ...prevRows,
+      {
+        id: String(nextIndex),
+        tarea: '',
+        subtarea: '',
+        inicio: '',
+        fin: '',
+        responsable: '',
+        cliente: '',
+        tipo: '',
+      },
+    ]);
+  };
 
   useEffect(() => {
     inputRefs.current.forEach(refs => {
@@ -62,249 +90,351 @@ const CourseOfActionEdit: React.FC<{ formData: DatosExtraidos; selectedEmpresa: 
         }
       });
     });
-  }, [formData]);
-
-  const handleSave = async () => {
-    try {
-      await setDoc(doc(firestore, `USERAUTH/${selectedEmpresa}/CourseOfAction`, formData.id), formData);
-      alert('Datos actualizados exitosamente');
-    } catch (error) {
-      console.error("Error updating document:", error);
-    }
-  };
+  }, [formValues, rows]);
 
   const setRef = (rowIndex: number, colIndex: number) => (el: HTMLTextAreaElement | null) => {
+    if (!inputRefs.current[rowIndex]) {
+      inputRefs.current[rowIndex] = [];
+    }
     inputRefs.current[rowIndex][colIndex] = el;
   };
 
-  if (!formData) {
-    return <div>No data available</div>;
-  }
+  const tareasDinamicas = Object.keys(formValues)
+    .filter((key) => key.startsWith('tarea') && !key.includes('Final'))
+    .map((key) => {
+      const index = parseInt(key.replace('tarea', ''), 10);
+      return {
+        id: String(index),
+        tarea: formValues[key],
+        subtarea: formValues[`subtarea${index}`] || '',
+        inicio: formValues[`inicio${index}`] || '',
+        fin: formValues[`fin${index}`] || '',
+        responsable: formValues[`responsable${index}`] || '',
+        cliente: formValues[`cliente${index}`] || '',
+        tipo: formValues[`tipo${index}`] || '',
+      };
+    })
+    .filter((tarea) => tarea.tarea)
+    .sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+  const totalRows = tareasDinamicas.length + rows.length;
 
   return (
-    <div className="overflow-x-auto">
-      <table id="myTable" className="table-fixed min-w-full divide-y divide-gray-200">
+    <div className="overflow-x-auto mx-16 mb-4">
+      <h2 className="text-2xl font-bold mb-4">13. ACCIONES CORRELATIVAS/PREVENTIVAS</h2>
+      <table id="viewTable" className="table-fixed min-w-full divide-y divide-gray-200">
         <tbody className="bg-white divide-y divide-gray-200">
-          {/* First row */}
+          {/* Primera fila (estática) */}
           <tr>
             <td colSpan={11} className="bg-[#00B0F0]">
               <div className="flex items-center w-full">
                 <span className="text-left font-bold text-sm">Anexo 1 Plan de Acción:</span>
-                <input type="text" value={formData.mainInput} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="numeroDocumento" className="ml-2 flex-1 border-none focus:outline-none bg-[#00B0F0] bg-opacity-100" />
+                <input
+                  className="ml-2 flex-1 border-none bg-[#00B0F0]"
+                  value={formValues.mainInput || ''}
+                  onChange={(e) => handleInputChange(e, 'mainInput')}
+                  style={{ 
+                    minHeight: '30px', 
+                    height: 'auto',
+                  }}
+                />
               </div>
             </td>
           </tr>
-          {/* Second row */}
+          {/* Segunda fila (estática) */}
           <tr style={{ height: rowSizes[1] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border-none" colSpan={2}>
+            <td style={{ width: columnSizes[0] }} colSpan={2} className="border-none">
               <div className="flex items-center w-full">
-                <span className="text-left">fecha:</span>
-                <input type="text" value={formData.inicio1} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio1" className="ml-2 flex-1 border-none focus:outline-none" />
+                <span className="text-left">Fecha:</span>
+                <input
+                  className="ml-2 flex-1 border-none"
+                  value={formValues.inicio1 || ''}
+                  onChange={(e) => handleInputChange(e, 'inicio1')}
+                  style={{ 
+                    minHeight: '30px', 
+                    height: 'auto',
+                  }}
+                />
               </div>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
-                <span className="text-center">duracion</span>
+                <span className="text-center">Duración</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border-none">
+            <td style={{ width: columnSizes[3] }} className="border-none">
               <div className="flex items-center w-full h-full">
-                <span className="text-left">inicio</span>
+                <span className="text-left">Inicio</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
-                <span className="text-left">termino</span>
+                <span className="text-left">Término</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border-none" colSpan={2}>
+            <td style={{ width: columnSizes[5] }} colSpan={2} className="border-none">
               <div className="flex items-center w-full">
                 <span className="text-left">%Avance Plan en Tiempo</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300">
               <span className="text-left">100%</span>
             </td>
             <td colSpan={3} className="border-none"></td>
           </tr>
-          {/* Third row */}
+          {/* Tercera fila (estática) */}
           <tr style={{ height: rowSizes[2] }}>
             <td colSpan={2} className="border-none"></td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border-none">
+            <td style={{ width: columnSizes[4] }} className="border-none">
               <div className="flex items-center w-full h-full">
-                <span className="text-center">7 dias</span>
+                <span className="text-center">7 días</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input type="text" value={formData.inicio1} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio1" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+              <textarea
+                value={formValues.inicio2 || ''}
+                onChange={(e) => handleInputChange(e, 'inicio2')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                style={{ 
+                  minHeight: '30px', 
+                  height: 'auto',
+                }}
+              />
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" value={formData.fin1} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin1" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+              <textarea
+                value={formValues.fin2 || ''}
+                onChange={(e) => handleInputChange(e, 'fin2')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                style={{ 
+                  minHeight: '30px', 
+                  height: 'auto',
+                }}
+              />
             </td>
             <td colSpan={2} className="border-none">
               <div className="flex items-center w-full">
                 <span className="text-left">%Estatus Plan</span>
               </div>
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300">
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300">
               <span className="text-left">100%</span>
             </td>
             <td colSpan={3} className="border-none"></td>
           </tr>
-          {/* Fourth row */}
+          {/* Cuarta fila (estática) */}
           <tr style={{ height: rowSizes[3] }}>
             <td colSpan={11} className="border-none"></td>
           </tr>
-          {/* Fifth row */}
+          {/* Cabecera dinámica */}
           <tr style={{ height: rowSizes[4] }} className='bg-[#00B0F0]'>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">#</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-center align-middle">Tarea</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-center align-middle">Sub-Tarea</td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 text-center align-middle">INICIO</td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 text-center align-middle">FIN</td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 text-center align-middle">Responsable</td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">Cliente</td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">Avance Real</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">Avance Programado</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 text-center align-middle">Tipo ACC-INC</td>
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">#</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-center align-middle">Tarea</td>
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-center align-middle">Sub-Tarea</td>
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300 text-center align-middle">INICIO</td>
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300 text-center align-middle">FIN</td>
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300 text-center align-middle">Responsable</td>
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300 text-center align-middle">Cliente</td>
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">Avance Real</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">Avance Programado</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300 text-center align-middle">Tipo ACC-INC</td>
           </tr>
-          {/* Sixth row */}
-          <tr style={{ height: rowSizes[5] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">1</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Desarrollar Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">
-              <textarea ref={setRef(0, 0)} value={formData.subtarea1} onChange={(e) => handleChange(e)} name="subtarea1" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+          {/* Fila de medidas correctivas (tarea1) */}
+          <tr style={{ height: rowSizes[5] }} className="bg-[#D9E1F2]">
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">1</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">
+              <textarea
+                ref={setRef(0, 0)}
+                value={formValues.medidasCorrectivas || ''}
+                onChange={(e) => handleInputChange(e, 'medidasCorrectivas')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.inicio2} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio2" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+              <textarea
+                ref={setRef(0, 1)}
+                value={formValues.subtarea1 || ''}
+                onChange={(e) => handleInputChange(e, 'subtarea1')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.fin2} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin2" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(0, 2)}
+                value={formValues.inicio2 || ''}
+                onChange={(e) => handleInputChange(e, 'inicio2')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(1, 0)} value={formData.responsable1} onChange={(e) => handleChange(e)} name="responsable1" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(0, 3)}
+                value={formValues.fin2 || ''}
+                onChange={(e) => handleInputChange(e, 'fin2')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(2, 0)} value={formData.cliente1} onChange={(e) => handleChange(e)} name="cliente1" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(1, 0)}
+                value={formValues.responsable1 || ''}
+                onChange={(e) => handleInputChange(e, 'responsable1')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.tipo1} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="tipo1" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(2, 0)}
+                value={formValues.cliente1 || ''}
+                onChange={(e) => handleInputChange(e, 'cliente1')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-          </tr>
-          {/* Seventh row */}
-          <tr style={{ height: rowSizes[6] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">2</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
-              <textarea ref={setRef(0, 1)} value={formData.subtarea2} onChange={(e) => handleChange(e)} name="subtarea2" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input type="text" value={formData.inicio3} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio3" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" value={formData.fin3} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin3" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <textarea ref={setRef(1, 1)} value={formData.responsable2} onChange={(e) => handleChange(e)} name="responsable2" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300">
-              <textarea ref={setRef(2, 1)} value={formData.cliente2} onChange={(e) => handleChange(e)} name="cliente2" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300">
-              <input type="text" value={formData.tipo2} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="tipo2" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-          </tr>
-          {/* Eighth row */}
-          <tr style={{ height: rowSizes[7] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">3</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">
-              <textarea ref={setRef(0, 2)} value={formData.subtarea3} onChange={(e) => handleChange(e)} name="subtarea3" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.inicio4} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio4" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.fin4} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin4" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(1, 2)} value={formData.responsable3} onChange={(e) => handleChange(e)} name="responsable3" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(2, 2)} value={formData.cliente3} onChange={(e) => handleChange(e)} name="cliente3" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.tipo3} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="tipo3" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(0, 4)}
+                value={formValues.tipo1 || ''}
+                onChange={(e) => handleInputChange(e, 'tipo1')}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
           </tr>
-          {/* Ninth row */}
-          <tr style={{ height: rowSizes[8] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">4</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Implementación de Medidas Correctivas</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
-              <textarea ref={setRef(0, 3)} value={formData.subtarea4} onChange={(e) => handleChange(e)} name="subtarea4" className="w-full h-full border-none focus:outline-none text-center" />
+          {/* Filas dinámicas */}
+          {tareasDinamicas.map((tarea, index) => (
+            <tr
+              key={tarea.id}
+              style={{ height: rowSizes[6 + index] || rowSizes[rowSizes.length - 1] }}
+              className={index % 2 === 0 ? 'bg-white' : 'bg-[#D9E1F2]'}
+            >
+              <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{index + 2}</td>
+              <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">
+                <textarea
+                  ref={setRef(index + 1, 0)}
+                  value={tarea.tarea}
+                  onChange={(e) => handleInputChange(e, `tarea${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+                <textarea
+                  ref={setRef(index + 1, 1)}
+                  value={tarea.subtarea}
+                  onChange={(e) => handleInputChange(e, `subtarea${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+                <textarea
+                  ref={setRef(index + 1, 2)}
+                  value={tarea.inicio}
+                  onChange={(e) => handleInputChange(e, `inicio${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+                <textarea
+                  ref={setRef(index + 1, 3)}
+                  value={tarea.fin}
+                  onChange={(e) => handleInputChange(e, `fin${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+                <textarea
+                  ref={setRef(index + 1, 4)}
+                  value={tarea.responsable}
+                  onChange={(e) => handleInputChange(e, `responsable${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+                <textarea
+                  ref={setRef(index + 1, 5)}
+                  value={tarea.cliente}
+                  onChange={(e) => handleInputChange(e, `cliente${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+              <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+              <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+              <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+              <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+                <textarea
+                  ref={setRef(index + 1, 6)}
+                  value={tarea.tipo}
+                  onChange={(e) => handleInputChange(e, `tipo${tarea.id}`)}
+                  className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+                />
+              </td>
+            </tr>
+          ))}
+          {/* Última fila fija (estática) */}
+          <tr style={{ height: rowSizes[9] }} className="bg-[#D9E1F2]">
+            <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{totalRows + 2}</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Reportar Avances de Plan de Acción</td>
+            <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
+              <textarea
+                ref={setRef(rows.length + 2, 0)}
+                value={formValues[`subtarea${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `subtarea${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input type="text" value={formData.inicio5} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio5" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[3] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(rows.length + 2, 1)}
+                value={formValues[`inicio${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `inicio${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input type="text" value={formData.fin5} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin5" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[4] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(rows.length + 2, 2)}
+                value={formValues[`fin${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `fin${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <textarea ref={setRef(1, 3)} value={formData.responsable4} onChange={(e) => handleChange(e)} name="responsable4" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[5] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(rows.length + 2, 3)}
+                value={formValues[`responsable${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `responsable${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300">
-              <textarea ref={setRef(2, 3)} value={formData.cliente4} onChange={(e) => handleChange(e)} name="cliente4" className="w-full h-full border-none focus:outline-none text-center" />
+            <td style={{ width: columnSizes[6] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(rows.length + 2, 4)}
+                value={formValues[`cliente${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `cliente${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300">
-              <input type="text" value={formData.tipo4} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="tipo4" className="w-full h-full border-none focus:outline-none text-center" />
-            </td>
-          </tr>
-          {/* Tenth row */}
-          <tr style={{ height: rowSizes[9] }}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">5</td>
-            <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Reportar Avances de Plan de Acción</td>
-            <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(0, 4)} value={formData.subtarea5} onChange={(e) => handleChange(e)} name="subtarea5" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.inicio6} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="inicio6" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.fin6} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="fin6" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(1, 4)} value={formData.responsable5} onChange={(e) => handleChange(e)} name="responsable5" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <textarea ref={setRef(2, 4)} value={formData.cliente5} onChange={(e) => handleChange(e)} name="cliente5" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
-            </td>
-            <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
-            <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">INMEDIATO</td>
-            <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input type="text" value={formData.tipo5} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} name="tipo5" className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100" />
+            <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
+            <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
+            <td style={{ width: columnSizes[10] }} className="border border-gray-300">
+              <textarea
+                ref={setRef(rows.length + 2, 5)}
+                value={formValues[`tipo${totalRows + 2}`] || ''}
+                onChange={(e) => handleInputChange(e, `tipo${totalRows + 2}`)}
+                className="w-full h-full border-none focus:outline-none text-center bg-transparent"
+              />
             </td>
           </tr>
         </tbody>
       </table>
-      <ExportButton tableId="myTable" />
-      <button onClick={handleSave} className="p-2 bg-blue-500 text-white rounded mt-4">
-        Guardar Cambios
-      </button>
+      <div className="flex justify-end mt-4">
+        <button onClick={addNewRow} className="p-2 bg-blue-500 text-white rounded ml-2">Agregar Fila</button>
+        <button onClick={handleSave} className="p-2 bg-green-500 text-white rounded ml-2">Guardar</button>
+      </div>
+      <ExportButton tableId="viewTable" />
     </div>
   );
 };
