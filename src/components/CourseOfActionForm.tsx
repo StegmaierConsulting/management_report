@@ -30,7 +30,6 @@ const CourseOfActionForm: React.FC = () => {
 
       const formattedEndDate = `${String(endDate.getDate()).padStart(2, '0')}/${String(endDate.getMonth() + 1).padStart(2, '0')}/${endDate.getFullYear()}`;
 
-      // Actualizar fechas de inicio y fin para todas las filas
       const newInputValues = { ...inputValues };
       for (let i = 1; i <= rows.length + 1; i++) {
         newInputValues[`inicio${i}`] = dateValue;
@@ -53,12 +52,11 @@ const CourseOfActionForm: React.FC = () => {
       setRows([...rows, `newRow${rows.length + 1}`]);
       inputRefs.current.push([null, null, null, null]);
 
-      // Actualizar fechas de inicio y fin para la nueva fila
       const newRowIndex = rows.length + 1;
       setInputValues(prevValues => ({
         ...prevValues,
         [`inicio${newRowIndex + 1}`]: date,
-        [`fin${newRowIndex + 1}`]: inputValues.fin1 // Usamos la fecha de fin de la primera fila como referencia
+        [`fin${newRowIndex + 1}`]: inputValues.fin1 
       }));
     }
   };
@@ -75,7 +73,6 @@ const CourseOfActionForm: React.FC = () => {
     }
 
     if (tipoValue) {
-      // Actualizar todos los tipos existentes y nuevos con la misma clave
       for (let i = 1; i <= rows.length + 1; i++) {
         newInputValues[`tipo${i}`] = tipoValue;
       }
@@ -109,6 +106,9 @@ const CourseOfActionForm: React.FC = () => {
     }
     inputRefs.current[rowIndex][colIndex] = el;
   };
+
+  // Calcular el índice dinámico para la última fila
+  const lastRowIndex = rows.length + 2;
 
   return (
     <div className="overflow-x-auto">
@@ -351,16 +351,16 @@ const CourseOfActionForm: React.FC = () => {
           ))}
           {/* Existing Row: Reportar Avances de Plan de Acción */}
           <tr style={{ height: rowSizes[9] }} className={(rows.length + 2) % 2 === 0 ? 'bg-white' : 'bg-[#D9E1F2]'}>
-            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{rows.length + 2}</td>
+            <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{lastRowIndex}</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Reportar Avances de Plan de Acción</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300">
-              <textarea ref={setRef(rows.length + 3, 0)} value={inputValues['subtarea5'] || ''} onChange={(e) => handleInputChange(e, 'subtarea5')} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
+              <textarea ref={setRef(rows.length + 3, 0)} value={inputValues[`subtarea${lastRowIndex}`] || ''} onChange={(e) => handleInputChange(e, `subtarea${lastRowIndex}`)} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
               <input 
                 type="text" 
-                value={inputValues['inicio6'] || date} 
-                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, 'inicio6')} 
+                value={inputValues[`inicio${lastRowIndex}`] || date} 
+                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, `inicio${lastRowIndex}`)} 
                 className="w-full h-full border-none focus:outline-none text-center bg-transparent"
                 style={{ 
                   minHeight: '30px', 
@@ -371,8 +371,8 @@ const CourseOfActionForm: React.FC = () => {
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
               <input 
                 type="text" 
-                value={inputValues['fin6'] || inputValues.fin1} 
-                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, 'fin6')} 
+                value={inputValues[`fin${lastRowIndex}`] || inputValues.fin1} 
+                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, `fin${lastRowIndex}`)} 
                 className="w-full h-full border-none focus:outline-none text-center bg-transparent"
                 style={{ 
                   minHeight: '30px', 
@@ -381,10 +381,10 @@ const CourseOfActionForm: React.FC = () => {
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <textarea ref={setRef(rows.length + 3, 1)} value={inputValues['responsable5'] || ''} onChange={(e) => handleInputChange(e, 'responsable5')} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
+              <textarea ref={setRef(rows.length + 3, 1)} value={inputValues[`responsable${lastRowIndex}`] || ''} onChange={(e) => handleInputChange(e, `responsable${lastRowIndex}`)} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300">
-              <textarea ref={setRef(rows.length + 3, 2)} value={inputValues['cliente5'] || ''} onChange={(e) => handleInputChange(e, 'cliente5')} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
+              <textarea ref={setRef(rows.length + 3, 2)} value={inputValues[`cliente${lastRowIndex}`] || ''} onChange={(e) => handleInputChange(e, `cliente${lastRowIndex}`)} className="w-full h-full border-none focus:outline-none text-center bg-transparent" />
             </td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
@@ -392,8 +392,8 @@ const CourseOfActionForm: React.FC = () => {
             <td style={{ width: columnSizes[10], minWidth: columnSizes[10], maxWidth: columnSizes[10] }} className="border border-gray-300">
               <input 
                 type="text" 
-                value={inputValues['tipo5'] || ''} 
-                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, 'tipo5')} 
+                value={inputValues[`tipo${lastRowIndex}`] || ''} 
+                onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, `tipo${lastRowIndex}`)} 
                 className="w-full h-full border-none focus:outline-none text-center bg-transparent"
                 style={{ 
                   minHeight: '30px', 

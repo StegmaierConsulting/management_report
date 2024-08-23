@@ -24,18 +24,18 @@ interface CourseOfActionViewProps {
 const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDataChange }) => {
   const tareasDinamicas = formData
     ? Object.keys(formData)
-        .filter((key) => key.startsWith('tarea') && key !== 'tarea1' && key !== 'tareaFinal')
+        .filter((key) => key.startsWith('tarea') && !key.includes('Final'))
         .map((key) => {
-          const index = parseInt(key.replace('tarea', ''));
+          const index = parseInt(key.replace('tarea', ''), 10);
           return {
             id: index,
             tarea: formData[key],
-            subtarea: formData[`subtarea${index}`],
-            inicio: formData[`inicio${index}`],
-            fin: formData[`fin${index}`],
-            responsable: formData[`responsable${index}`],
-            cliente: formData[`cliente${index}`],
-            tipo: formData[`tipo${index}`],
+            subtarea: formData[`subtarea${index}`] || '',
+            inicio: formData[`inicio${index}`] || '',
+            fin: formData[`fin${index}`] || '',
+            responsable: formData[`responsable${index}`] || '',
+            cliente: formData[`cliente${index}`] || '',
+            tipo: formData[`tipo${index}`] || '',
           };
         })
         .filter((tarea) => tarea.tarea)
@@ -46,30 +46,15 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
   const fechaFinPropagada = formData?.fin1;
   const tipoPropagado = formData?.tipo1;
 
-  if (formData) {
-    tareasDinamicas.forEach((tarea) => {
-      tarea.inicio = tarea.inicio || fechaInicioPropagada;
-      tarea.fin = tarea.fin || fechaFinPropagada;
-      tarea.tipo = tarea.tipo || tipoPropagado;
-    });
-  }
-
-  const inicioUltimaFila = formData?.inicio6 || fechaInicioPropagada;
-  const finUltimaFila = formData?.fin6 || fechaFinPropagada;
-  const tipoUltimaFila = formData?.tipo5 || tipoPropagado;
-
   useEffect(() => {
     if (formData) {
       const updatedData = {
         ...formData,
         tareasDinamicas,
-        inicioUltimaFila,
-        finUltimaFila,
-        tipoUltimaFila,
       };
       onDataChange(updatedData);
     }
-  }, [formData, tareasDinamicas, inicioUltimaFila, finUltimaFila, tipoUltimaFila, onDataChange]);
+  }, [formData, tareasDinamicas, onDataChange]);
 
   if (!formData) {
     return <div>No hay datos disponibles</div>;
@@ -167,7 +152,9 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
           {/* Primera fila dinámica (estática) */}
           <tr style={{ height: rowSizes[5] }} className="bg-[#D9E1F2]">
             <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">1</td>
-            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Desarrollar Medidas Correctivas</td>
+            <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">
+              <span className="w-full h-full text-center">{formData.medidasCorrectivas}</span>
+            </td>
             <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
               <span className="w-full h-full text-center">{formData.subtarea1}</span>
             </td>
@@ -192,7 +179,11 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
           </tr>
           {/* Filas dinámicas */}
           {tareasDinamicas.map((tarea, index) => (
-            <tr key={tarea.id} style={{ height: rowSizes[6 + index] }} className={index % 2 === 0 ? 'bg-white' : 'bg-[#D9E1F2]'}>
+            <tr
+              key={tarea.id}
+              style={{ height: rowSizes[6 + index] || rowSizes[rowSizes.length - 1] }} // Asegura que siempre haya una altura válida
+              className={index % 2 === 0 ? 'bg-white' : 'bg-[#D9E1F2]'}
+            >
               <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{tarea.id}</td>
               <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">{tarea.tarea}</td>
               <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
@@ -223,25 +214,25 @@ const CourseOfActionView: React.FC<CourseOfActionViewProps> = ({ formData, onDat
             <td style={{ width: columnSizes[0] }} className="border border-gray-300 text-center align-middle">{tareasDinamicas.length + 2}</td>
             <td style={{ width: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Reportar Avances de Plan de Acción</td>
             <td style={{ width: columnSizes[2] }} className="border border-gray-300 text-left align-middle">
-              <span className="w-full h-full text-center">{formData.subtarea5}</span>
+              <span className="w-full h-full text-center">{formData[`subtarea${tareasDinamicas.length + 2}`]}</span>
             </td>
             <td style={{ width: columnSizes[3] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{inicioUltimaFila}</span>
+              <span className="w-full h-full text-center">{formData[`inicio${tareasDinamicas.length + 2}`] || fechaInicioPropagada}</span>
             </td>
             <td style={{ width: columnSizes[4] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{finUltimaFila}</span>
+              <span className="w-full h-full text-center">{formData[`fin${tareasDinamicas.length + 2}`] || fechaFinPropagada}</span>
             </td>
             <td style={{ width: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.responsable6}</span>
+              <span className="w-full h-full text-center">{formData[`responsable${tareasDinamicas.length + 2}`]}</span>
             </td>
             <td style={{ width: columnSizes[6] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.cliente5}</span>
+              <span className="w-full h-full text-center">{formData[`cliente${tareasDinamicas.length + 2}`]}</span>
             </td>
             <td style={{ width: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[8] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[9] }} className="border border-gray-300 text-center align-middle">INMEDIATO</td>
             <td style={{ width: columnSizes[10] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{tipoUltimaFila}</span>
+              <span className="w-full h-full text-center">{formData[`tipo${tareasDinamicas.length + 2}`] || tipoPropagado}</span>
             </td>
           </tr>
         </tbody>
