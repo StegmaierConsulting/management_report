@@ -28,7 +28,7 @@ export interface DatosExtraidos {
 
 interface InmediateActionsEditProps {
   formData: DatosExtraidos;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   selectedEmpresa: string;
   onFileChange: () => void;
 }
@@ -40,7 +40,7 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
     setLocalData(formData);
   }, [formData]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setLocalData((prevData) => ({ ...prevData, [name]: value }));
     handleChange(e);
@@ -73,12 +73,16 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td colSpan={10} className="bg-[#00B0F0]">
               <div className="flex items-center w-full">
                 <span className="text-left font-bold text-sm">Anexo 1 Acciones Inmediatas:</span>
-                <input
-                  type="text"
-                  className="ml-2 flex-1 border-none focus:outline-none bg-[#00B0F0] bg-opacity-100"
+                <textarea
+                  className="ml-2 flex-1 border-none focus:outline-none bg-[#00B0F0] bg-opacity-100 resize-none overflow-hidden"
                   value={localData.mainInput}
                   name="mainInput"
                   onChange={handleInputChange}
+                  style={{
+                    minHeight: '30px',
+                    width: '100%',
+                    height: '20px',
+                  }}
                 />
               </div>
             </td>
@@ -88,12 +92,16 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border-none" colSpan={3}>
               <div className="flex items-center w-full">
                 <span className="text-left">fecha:</span>
-                <input
-                  type="text"
-                  className="ml-2 flex-1 border-none focus:outline-none"
+                <textarea
+                  className="ml-2 flex-1 border-none focus:outline-none resize-none overflow-hidden"
                   value={localData.date}
                   name="date"
                   onChange={handleInputChange}
+                  style={{
+                    minHeight: '30px',
+                    width: '100%',
+                    height: '20px',
+                  }}
                 />
               </div>
             </td>
@@ -121,21 +129,19 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
           <tr style={{ height: rowSizes[2] }}>
             <td colSpan={3} className="border-none"></td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td colSpan={2} className="border-none">
@@ -170,51 +176,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">1</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Comunicar lo acontecido a Jefatura Directa</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable1}
                 onChange={handleInputChange}
                 name="responsable1"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.cliente1}
                 onChange={handleInputChange}
                 name="cliente1"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo1}
                 onChange={handleInputChange}
                 name="tipo1"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
           </tr>
@@ -223,51 +224,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">2</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Informar Incidente y su clasificación a la Dirección</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable2}
                 onChange={handleInputChange}
                 name="responsable2"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoClient}
                 onChange={handleInputChange}
                 name="autoClient"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo2}
                 onChange={handleInputChange}
                 name="tipo2"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
           </tr>
@@ -276,51 +272,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">3</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Enviar recopilación de antecedentes</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable3}
                 onChange={handleInputChange}
                 name="responsable3"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoClient}
                 onChange={handleInputChange}
                 name="autoClient"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo3}
                 onChange={handleInputChange}
                 name="tipo3"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
           </tr>
@@ -329,51 +320,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">4</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Informar Incidente Ocurrido a Jefatura CGE</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable4}
                 onChange={handleInputChange}
                 name="responsable4"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoClient}
                 onChange={handleInputChange}
                 name="autoClient"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo4}
                 onChange={handleInputChange}
                 name="tipo4"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
           </tr>
@@ -382,51 +368,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">5</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle bg-[#D9E1F2]">Generar Reporte Flash vía WhatsApp a Jefe de Área CGE y HSEQ</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable5}
                 onChange={handleInputChange}
                 name="responsable5"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoClient}
                 onChange={handleInputChange}
                 name="autoClient"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo5}
                 onChange={handleInputChange}
                 name="tipo5"
-                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
+                className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100 resize-none overflow-hidden"
               />
             </td>
           </tr>
@@ -435,51 +416,46 @@ const InmediateActionsEdit: React.FC<InmediateActionsEditProps> = ({ formData, h
             <td style={{ width: columnSizes[0], minWidth: columnSizes[0], maxWidth: columnSizes[0] }} className="border border-gray-300 text-center align-middle">6</td>
             <td style={{ width: columnSizes[1], minWidth: columnSizes[1], maxWidth: columnSizes[1] }} className="border border-gray-300 text-left align-middle">Iniciar Proceso de Investigación Preliminar de Incidentes</td>
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoDate}
                 onChange={handleInputChange}
                 name="autoDate"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.responsable6}
                 onChange={handleInputChange}
                 name="responsable6"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.autoClient}
                 onChange={handleInputChange}
                 name="autoClient"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle bg-[#36BE52]">INMEDIATO</td>
             <td style={{ width: columnSizes[9], minWidth: columnSizes[9], maxWidth: columnSizes[9] }} className="border border-gray-300">
-              <input
-                type="text"
+              <textarea
                 value={localData.tipo6}
                 onChange={handleInputChange}
                 name="tipo6"
-                className="w-full h-full border-none focus:outline-none text-center"
+                className="w-full h-full border-none focus:outline-none text-center resize-none overflow-hidden"
               />
             </td>
           </tr>
