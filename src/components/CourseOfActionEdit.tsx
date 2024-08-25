@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { firestore } from '@/config/firebase';
 import ExportButton from '@/components/ExportButtonTable';
-
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const columnSizes = [
   '6.71px', '30.84px', '30.84px', '20.40px', '20.40px', '18.40px', '23.73px', '13.73px', '16.48px', '18.40px', '11.28px'
@@ -118,6 +119,50 @@ const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handl
     .sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
   const totalRows = tareasDinamicas.length + rows.length;
+
+  const exportPdf = async () => {
+    const doc = new jsPDF('portrait');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const table = document.getElementById('viewTable');
+
+    if (!table) {
+      console.error('Table element not found');
+      return;
+    }
+
+    let currentPageHeight = 0;
+    const rowsPerPage = 5; // Ajusta este número según la altura de las filas y la página
+
+    const totalRows = table.querySelectorAll('tbody tr').length;
+    let rowsCaptured = 0;
+
+    while (rowsCaptured < totalRows) {
+      const canvas = await html2canvas(table, {
+        useCORS: true,
+        scale: 2,
+        y: currentPageHeight,
+        height: pageHeight, // Captura la altura de la página completa
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+      const width = imgWidth * ratio;
+      const height = imgHeight * ratio;
+
+      doc.addImage(imgData, 'PNG', 0, 0, width, height);
+      rowsCaptured += rowsPerPage;
+
+      if (rowsCaptured < totalRows) {
+        doc.addPage();
+        currentPageHeight += pageHeight;
+      }
+    }
+
+    doc.save('document.pdf');
+  };
 
   return (
     <div className="overflow-x-auto mx-16 mb-4">
@@ -433,6 +478,7 @@ const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handl
       <div className="flex justify-end mt-4">
         <button onClick={addNewRow} className="p-2 bg-blue-500 text-white rounded ml-2">Agregar Fila</button>
         <button onClick={handleSave} className="p-2 bg-green-500 text-white rounded ml-2">Guardar</button>
+        <button onClick={exportPdf} className="p-2 bg-red-500 text-white rounded ml-2">Exportar PDF</button>
       </div>
       <ExportButton tableId="viewTable" />
     </div>
