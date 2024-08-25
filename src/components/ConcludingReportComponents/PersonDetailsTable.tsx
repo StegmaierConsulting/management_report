@@ -67,7 +67,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
   return (
     <div>
       {formData.map((person, index) => (
-        <div key={index} className="border border-gray-300 p-4 mx-6 mb-6 border-dotted">
+        <div key={index} className="border border-gray-300 p-4 mx-6 mb-6 border-dotted w-full">
           <h2 className="font-semibold mb-4">
             2. INDIVIDUALIZACION DE LA PERSONA ACCIDENTADA {index + 1} (*)
           </h2>
