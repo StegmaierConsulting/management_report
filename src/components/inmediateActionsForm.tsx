@@ -15,8 +15,6 @@ const Table: React.FC = () => {
   const [autoDate, setAutoDate] = useState('');
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
   const [mainInput, setMainInput] = useState('');
-  const [client, setClient] = useState('');
-  const [autoClient, setAutoClient] = useState('');
 
   useEffect(() => {
     if (date) {
@@ -26,15 +24,6 @@ const Table: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [date]);
-
-  useEffect(() => {
-    if (client) {
-      const timer = setTimeout(() => {
-        setAutoClient(client);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [client]);
 
   useEffect(() => {
     let newInputValues = { ...inputValues };
@@ -59,8 +48,9 @@ const Table: React.FC = () => {
     setMainInput(e.target.value);
   };
 
-  const handleClientChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setClient(e.target.value);
+  const handleClientChange = (e: React.ChangeEvent<HTMLTextAreaElement>, rowIndex: number) => {
+    const clientName = `cliente${rowIndex}`;
+    setInputValues({ ...inputValues, [clientName]: e.target.value });
   };
 
   const getTableData = () => {
@@ -68,7 +58,6 @@ const Table: React.FC = () => {
       mainInput,
       date,
       autoDate,
-      autoClient,
       ...inputValues
     };
   };
@@ -87,9 +76,9 @@ const Table: React.FC = () => {
                   onChange={handleMainInputChange}
                   className="ml-3 flex-1 pt-5 border-none focus:outline-none bg-blue-400 bg-opacity-10 resize-none overflow-hidden"
                   style={{
-                    minHeight: '30px', // Tamaño mínimo para que se vea bien el contenido
-                    width: '100%', // Asegura que el ancho se ajuste
-                    height: '20px', // Altura ajustada para que no quede debajo de la línea divisoria
+                    minHeight: '30px',
+                    width: '100%',
+                    height: '20px',
                   }}
                 />
               </div>
@@ -102,9 +91,9 @@ const Table: React.FC = () => {
                 <span className="text-left">fecha:</span>
                 <textarea
                   style={{
-                    minHeight: '30px', // Tamaño mínimo para que se vea bien el contenido
-                    width: '100%', // Asegura que el ancho se ajuste
-                    height: '20px', // Altura ajustada para que no quede debajo de la línea divisoria
+                    minHeight: '30px',
+                    width: '100%',
+                    height: '20px',
                   }}
                   className="ml-2 flex-1 border-none focus:outline-none"
                   value={date}
@@ -172,7 +161,9 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[2], minWidth: columnSizes[2], maxWidth: columnSizes[2] }} className="border border-gray-300 text-center align-middle">INICIO</td>
             <td style={{ width: columnSizes[3], minWidth: columnSizes[3], maxWidth: columnSizes[3] }} className="border border-gray-300 text-center align-middle">FIN</td>
             <td style={{ width: columnSizes[4], minWidth: columnSizes[4], maxWidth: columnSizes[4] }} className="border border-gray-300 text-center align-middle">Responsable</td>
-            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 text-center align-middle">Cliente</td>
+            <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 text-center align-middle">
+              Cliente
+            </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">Avance Real</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">Avance Programado</td>
             <td style={{ width: columnSizes[8], minWidth: columnSizes[8], maxWidth: columnSizes[8] }} className="border border-gray-300 text-center align-middle">III_ddmmm: Comentario</td>
@@ -209,9 +200,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente1'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente1')}
-                onBlur={handleClientChange}
+                value={inputValues['cliente1'] || ''}
+                onChange={(e) => handleClientChange(e, 1)}
                 className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
               />
             </td>
@@ -258,8 +248,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente2'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente2')}
+                value={inputValues['cliente2'] || ''}
+                onChange={(e) => handleClientChange(e, 2)}
                 className="w-full h-full border-none focus:outline-none text-center"
               />
             </td>
@@ -306,8 +296,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente3'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente3')}
+                value={inputValues['cliente3'] || ''}
+                onChange={(e) => handleClientChange(e, 3)}
                 className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
               />
             </td>
@@ -354,8 +344,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente4'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente4')}
+                value={inputValues['cliente4'] || ''}
+                onChange={(e) => handleClientChange(e, 4)}
                 className="w-full h-full border-none focus:outline-none text-center"
               />
             </td>
@@ -402,8 +392,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente5'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente5')}
+                value={inputValues['cliente5'] || ''}
+                onChange={(e) => handleClientChange(e, 5)}
                 className="w-full h-full border-none focus:outline-none text-center bg-[#D9E1F2] bg-opacity-100"
               />
             </td>
@@ -450,8 +440,8 @@ const Table: React.FC = () => {
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
               <textarea
                 style={{ width: '100%', height: '100%', resize: 'none' }}
-                value={inputValues['cliente6'] || autoClient}
-                onChange={(e) => handleInputChange(e, 'cliente6')}
+                value={inputValues['cliente6'] || ''}
+                onChange={(e) => handleClientChange(e, 6)}
                 className="w-full h-full border-none focus:outline-none text-center"
               />
             </td>
@@ -476,3 +466,4 @@ const Table: React.FC = () => {
 };
 
 export default Table;
+
