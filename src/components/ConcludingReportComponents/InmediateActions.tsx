@@ -5,6 +5,11 @@ export interface DatosExtraidos {
   autoClient: string;
   autoDate: string;
   cliente1: string;
+  cliente2: string;
+  cliente3: string;
+  cliente4: string;
+  cliente5: string;
+  cliente6: string;
   date: string;
   empresaGuardado: string;
   mainInput: string;
@@ -164,7 +169,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
               <span className="w-full h-full text-center">{formData.responsable2}</span>
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.autoClient}</span>
+              <span className="w-full h-full text-center">{formData.cliente2}</span>
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
@@ -187,7 +192,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
               <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.responsable3}</span>
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.autoClient}</span>
+              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.cliente3}</span>
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
@@ -210,7 +215,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
               <span className="w-full h-full text-center">{formData.responsable4}</span>
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.autoClient}</span>
+              <span className="w-full h-full text-center">{formData.cliente4}</span>
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>
@@ -233,7 +238,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
               <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.responsable5}</span>
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300 bg-[#D9E1F2]">
-              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.autoClient}</span>
+              <span className="w-full h-full text-center bg-[#D9E1F2] bg-opacity-100">{formData.cliente5}</span>
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle bg-[#D9E1F2]">100%</td>
@@ -256,7 +261,7 @@ const InmediateActions: React.FC<InmediateActionsProps> = ({ formData, onDataCha
               <span className="w-full h-full text-center">{formData.responsable6}</span>
             </td>
             <td style={{ width: columnSizes[5], minWidth: columnSizes[5], maxWidth: columnSizes[5] }} className="border border-gray-300">
-              <span className="w-full h-full text-center">{formData.autoClient}</span>
+              <span className="w-full h-full text-center">{formData.cliente6}</span>
             </td>
             <td style={{ width: columnSizes[6], minWidth: columnSizes[6], maxWidth: columnSizes[6] }} className="border border-gray-300 text-center align-middle">100%</td>
             <td style={{ width: columnSizes[7], minWidth: columnSizes[7], maxWidth: columnSizes[7] }} className="border border-gray-300 text-center align-middle">100%</td>

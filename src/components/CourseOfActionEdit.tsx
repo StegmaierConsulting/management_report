@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { firestore } from '@/config/firebase';
-import ExportButton from '@/components/ExportButtonTable';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -121,9 +120,7 @@ const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handl
   const totalRows = tareasDinamicas.length + rows.length;
 
   const exportPdf = async () => {
-    const doc = new jsPDF('portrait');
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
+    const doc = new jsPDF('portrait', 'pt', 'a4');
     const table = document.getElementById('viewTable');
 
     if (!table) {
@@ -131,37 +128,27 @@ const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handl
       return;
     }
 
-    let currentPageHeight = 0;
-    const rowsPerPage = 5; // Ajusta este número según la altura de las filas y la página
+    // Temporarily apply scale transformation to ensure the whole table fits in one PDF page
+    table.style.transform = 'scale(1)';
+    table.style.transformOrigin = 'top left';
 
-    const totalRows = table.querySelectorAll('tbody tr').length;
-    let rowsCaptured = 0;
+    const canvas = await html2canvas(table, {
+      useCORS: true,
+      scale: 2, // Increase scale for better quality
+    });
 
-    while (rowsCaptured < totalRows) {
-      const canvas = await html2canvas(table, {
-        useCORS: true,
-        scale: 2,
-        y: currentPageHeight,
-        height: pageHeight, // Captura la altura de la página completa
-      });
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
 
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-      const width = imgWidth * ratio;
-      const height = imgHeight * ratio;
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgHeight * pdfWidth) / imgWidth;
 
-      doc.addImage(imgData, 'PNG', 0, 0, width, height);
-      rowsCaptured += rowsPerPage;
-
-      if (rowsCaptured < totalRows) {
-        doc.addPage();
-        currentPageHeight += pageHeight;
-      }
-    }
-
+    doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     doc.save('document.pdf');
+
+    // Revert the scale transformation
+    table.style.transform = '';
   };
 
   return (
@@ -480,9 +467,9 @@ const CourseOfActionEdit: React.FC<CourseOfActionEditProps> = ({ formData, handl
         <button onClick={handleSave} className="p-2 bg-green-500 text-white rounded ml-2">Guardar</button>
         <button onClick={exportPdf} className="p-2 bg-red-500 text-white rounded ml-2">Exportar PDF</button>
       </div>
-      <ExportButton tableId="viewTable" />
     </div>
   );
 };
 
 export default CourseOfActionEdit;
+
