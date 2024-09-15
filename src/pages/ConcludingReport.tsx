@@ -1,3 +1,5 @@
+// MainPage.tsx
+
 import React, { useState, useRef } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -33,6 +35,9 @@ const MainPage: React.FC = () => {
   const [inmediateActionsData, setInmediateActionsData] = useState<any>(null);
   const [flashData, setFlashData] = useState<any>(null);
   const [imageLinks, setImageLinks] = useState<string[]>([]);
+
+  // Estado para almacenar los datos de FinalReport
+  const [finalReportData, setFinalReportData] = useState<any>({});
 
   // State for logos
   const [leftLogo, setLeftLogo] = useState<string | null>(null);
@@ -82,11 +87,16 @@ const MainPage: React.FC = () => {
         const data = doc.data();
 
         if (collectionName === 'RootCauseAnalysis') {
-          // Verifica que los datos sean un mapa (map) con múltiples entradas, como lo has descrito
+          // Verifica que los datos sean un mapa (map) con múltiples entradas
           if (data) {
             // Recorre todas las claves dentro del documento para extraer las tablas
             Object.keys(data).forEach((key) => {
-              if (key !== 'empresaGuardado' && key !== 'numeroDocumento' && key !== 'timestamp' && key !== 'usuario') {
+              if (
+                key !== 'empresaGuardado' &&
+                key !== 'numeroDocumento' &&
+                key !== 'timestamp' &&
+                key !== 'usuario'
+              ) {
                 const table = data[key];
                 rootCauseTables.push({
                   id: table.id || 0,
@@ -118,6 +128,25 @@ const MainPage: React.FC = () => {
     setRootCauseData(rootCauseTables); // Actualizar el estado con todas las tablas
   };
 
+  // Función para manejar el clic en el botón de autorrellenado
+  const handleAutoFill = async () => {
+    const data = await fetchFinalReportData();
+    setFinalReportData(data || {});
+  };
+
+  // Función para obtener los datos de FinalReport
+  const fetchFinalReportData = async () => {
+    const collectionPath = `USERAUTH/${selectedEmpresa}/FinalReport`;
+    const q = query(collection(firestore, collectionPath), where('numeroDocumento', '==', searchTerm));
+
+    const querySnapshot = await getDocs(q);
+    let data = {};
+    querySnapshot.forEach((doc) => {
+      data = doc.data();
+    });
+
+    return data;
+  };
 
   const handleExportPdf = async () => {
     const doc = new jsPDF('portrait');
@@ -126,7 +155,7 @@ const MainPage: React.FC = () => {
 
     // Ocultar inputs de carga de logos y botones antes de generar el PDF
     const elementsToHide = document.querySelectorAll('.logo-input, .no-print');
-    elementsToHide.forEach(element => {
+    elementsToHide.forEach((element) => {
       (element as HTMLElement).style.display = 'none';
     });
 
@@ -134,7 +163,6 @@ const MainPage: React.FC = () => {
       `#main-container input:not([type="radio"]):not([type="checkbox"]), #main-container textarea`
     );
     const inputValues: { [key: string]: string } = {};
-
     inputElements.forEach((input, index) => {
       inputValues[index] = (input as HTMLInputElement).value || (input as HTMLTextAreaElement).value;
       const textNode = document.createElement('span');
@@ -219,7 +247,7 @@ const MainPage: React.FC = () => {
     });
 
     // Restaurar la visibilidad de los inputs de carga de logos y botones
-    elementsToHide.forEach(element => {
+    elementsToHide.forEach((element) => {
       (element as HTMLElement).style.display = '';
     });
   };
@@ -276,6 +304,9 @@ const MainPage: React.FC = () => {
             <button onClick={handleExportPdf} className="p-2 bg-blue-500 text-white rounded ml-2 no-print">
               Exportar a PDF
             </button>
+            <button onClick={handleAutoFill} className="p-2 bg-blue-500 text-white rounded ml-2">
+              Autorrellenar
+            </button>
           </div>
 
           {results.length > 0 || rootCauseData.length > 0 || flashData ? (
@@ -286,13 +317,25 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
                 <h1 className="text-3xl text-center my-8 font-bold underline">INFORME DE ACCIDENTE/INCIDENTE</h1>
-                <CompanyField onDataChange={setCompanyFieldData} />
-                <TypeAccidentIncidentTable onDataChange={setTypeAccidentIncidentTableData} />
-                <PersonDetailsTable onDataChange={setPersonDetailsData} />
-                <DamagedEquipmentTable onDataChange={setDamagedEquipmentData} />
+                <CompanyField
+                  onDataChange={setCompanyFieldData}
+                  initialData={finalReportData.companyFieldData}
+                />
+                <TypeAccidentIncidentTable
+                  onDataChange={setTypeAccidentIncidentTableData}
+                  initialData={finalReportData.typeAccidentIncidentTableData}
+                />
+                <PersonDetailsTable
+                  onDataChange={setPersonDetailsData}
+                  initialData={finalReportData.personDetailsData}
+                />
+                <DamagedEquipmentTable
+                  onDataChange={setDamagedEquipmentData}
+                  initialData={finalReportData.damagedEquipmentData}
+                />
               </div>
               <div ref={page2Ref}>
                 <LogoUploader
@@ -300,9 +343,12 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <ThirdPartyIdentificationTable onDataChange={setThirdPartyIdentificationData} />
+                <ThirdPartyIdentificationTable
+                  onDataChange={setThirdPartyIdentificationData}
+                  initialData={finalReportData.thirdPartyIdentificationData}
+                />
                 <AccidentDetailsForm data={flashData} onDataChange={setAccidentDetailsData} />
               </div>
               <div ref={page3Ref}>
@@ -311,14 +357,13 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
                 <RootCauseAnalysis
                   data={rootCauseData}
                   handleChange={(data) => setRootCauseAnalysisData(data)}
                   onDataChange={setRootCauseAnalysisData}
                 />
-
               </div>
               <div ref={page4Ref}>
                 <LogoUploader
@@ -326,10 +371,16 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <DescriptionAccidentIncident onDataChange={setDescriptionAccidentIncidentData} />
-                <ConclusionsForm onDataChange={setConclusionsFormData} />
+                <DescriptionAccidentIncident
+                  onDataChange={setDescriptionAccidentIncidentData}
+                  initialData={finalReportData.descriptionAccidentIncidentData}
+                />
+                <ConclusionsForm
+                  onDataChange={setConclusionsFormData}
+                  initialData={finalReportData.conclusionsFormData}
+                />
               </div>
               <div ref={page5Ref}>
                 <LogoUploader
@@ -337,7 +388,7 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
                 <InmediateActions formData={inmediateActionsData} onDataChange={setInmediateActionsFormData} />
               </div>
@@ -347,9 +398,12 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <CourseOfActions formData={results.find(r => r.collectionName === 'CourseOfAction')} onDataChange={setCourseOfActionsData} />
+                <CourseOfActions
+                  formData={results.find((r) => r.collectionName === 'CourseOfAction')}
+                  onDataChange={setCourseOfActionsData}
+                />
               </div>
               <div ref={page7Ref}>
                 <LogoUploader
@@ -357,9 +411,12 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <CostsTable onDataChange={setCostsTableData} />
+                <CostsTable
+                  onDataChange={setCostsTableData}
+                  initialData={finalReportData.costsTableData}
+                />
               </div>
               <div ref={page8Ref}>
                 <LogoUploader
@@ -367,9 +424,9 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <ImagesDisplay imageUrls={imageLinks} onDataChange={() => { }} />
+                <ImagesDisplay imageUrls={imageLinks} onDataChange={() => {}} />
               </div>
               <div ref={page9Ref}>
                 <LogoUploader
@@ -377,9 +434,12 @@ const MainPage: React.FC = () => {
                   rightLogo={rightLogo}
                   setLeftLogo={setLeftLogo}
                   setRightLogo={setRightLogo}
-                  onDataChange={() => { }}
+                  onDataChange={() => {}}
                 />
-                <InvestigationResponsible onDataChange={setInvestigationResponsibleData} />
+                <InvestigationResponsible
+                  onDataChange={setInvestigationResponsibleData}
+                  initialData={finalReportData.investigationResponsibleData}
+                />
               </div>
 
               {/* Integración del botón de guardado */}

@@ -1,3 +1,5 @@
+// ThirdPartyIdentificationTable.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface ThirdPartyIdentificationTableProps {
@@ -10,9 +12,21 @@ interface ThirdPartyIdentificationTableProps {
     danosMateriales: string;
     patente: string;
   }) => void;
+  initialData?: {
+    nombre: string;
+    rut: string;
+    edad: string;
+    lesiones: string;
+    tipoVehiculo: string;
+    danosMateriales: string;
+    patente: string;
+  };
 }
 
-const ThirdPartyIdentificationTable: React.FC<ThirdPartyIdentificationTableProps> = ({ onDataChange }) => {
+const ThirdPartyIdentificationTable: React.FC<ThirdPartyIdentificationTableProps> = ({
+  onDataChange,
+  initialData,
+}) => {
   const [formData, setFormData] = useState({
     nombre: '',
     rut: '',
@@ -22,6 +36,13 @@ const ThirdPartyIdentificationTable: React.FC<ThirdPartyIdentificationTableProps
     danosMateriales: '',
     patente: '',
   });
+
+  // Efecto para inicializar formData con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

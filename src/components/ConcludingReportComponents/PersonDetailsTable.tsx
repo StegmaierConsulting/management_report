@@ -1,10 +1,13 @@
+// PersonDetailsTable.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface PersonDetailsTableProps {
   onDataChange: (data: any) => void;
+  initialData?: any;
 }
 
-const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange }) => {
+const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange, initialData }) => {
   const [formData, setFormData] = useState([
     {
       nombre: '',
@@ -20,10 +23,17 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
       hospitalizacion: '',
       testigo: '',
       areaTrabajoFinal: '', // Nuevo campo
-      rutFinal: '',         // Nuevo campo
-      cargoFinal: '',       // Nuevo campo
+      rutFinal: '', // Nuevo campo
+      cargoFinal: '', // Nuevo campo
     },
   ]);
+
+  // Efecto para inicializar formData con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData && Array.isArray(initialData)) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const { name, value } = e.target;
@@ -49,8 +59,8 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
         hospitalizacion: '',
         testigo: '',
         areaTrabajoFinal: '', // Nuevo campo
-        rutFinal: '',         // Nuevo campo
-        cargoFinal: '',       // Nuevo campo
+        rutFinal: '', // Nuevo campo
+        cargoFinal: '', // Nuevo campo
       },
     ]);
   };
@@ -86,7 +96,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Rut</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -99,7 +109,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Edad</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -112,7 +122,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Cargo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -125,7 +135,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Antigüedad en el cargo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -138,7 +148,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Área de trabajo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -151,7 +161,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Actividad que realizaba</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -164,7 +174,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Parte del Cuerpo Lesionada</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -177,7 +187,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Tipo de lesión</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -190,7 +200,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Lugar de atención médica</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -203,7 +213,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Hospitalización</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -244,7 +254,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   </div>
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Acompañantes y/o testigo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -258,7 +268,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                 </td>
               </tr>
               {/* Nuevos campos añadidos */}
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Área de trabajo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -271,7 +281,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Rut</td>
                 <td className="p-2">:</td>
                 <td className="p-2">
@@ -284,7 +294,7 @@ const PersonDetailsTable: React.FC<PersonDetailsTableProps> = ({ onDataChange })
                   />
                 </td>
               </tr>
-              <tr className="border-t border-dotted border-gray-300">
+              <tr className="border-t border-dotted">
                 <td className="p-2 font-semibold">Cargo</td>
                 <td className="p-2">:</td>
                 <td className="p-2">

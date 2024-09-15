@@ -4,16 +4,24 @@ import React, { useState, useEffect } from 'react';
 
 interface CompanyFieldProps {
   onDataChange: (data: { companyName: string }) => void;
+  initialData?: { companyName: string };
 }
 
-const CompanyField: React.FC<CompanyFieldProps> = ({ onDataChange }) => {
-  const [companyName, setCompanyName] = useState('');
+const CompanyField: React.FC<CompanyFieldProps> = ({ onDataChange, initialData }) => {
+  const [companyName, setCompanyName] = useState(initialData?.companyName || '');
+
+  // Actualiza el estado cuando initialData cambie
+  useEffect(() => {
+    if (initialData && initialData.companyName !== undefined) {
+      setCompanyName(initialData.companyName);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyName(e.target.value);
   };
 
-  // Actualiza los datos en MainPage cada vez que companyName cambie
+  // Notifica al componente padre cada vez que companyName cambie
   useEffect(() => {
     onDataChange({ companyName });
   }, [companyName, onDataChange]);
@@ -27,7 +35,7 @@ const CompanyField: React.FC<CompanyFieldProps> = ({ onDataChange }) => {
             type="text"
             value={companyName}
             onChange={handleInputChange}
-            className="w-full p-1  text-[#0070c0] font-bold underline"
+            className="w-full p-1 text-[#0070c0] font-bold underline"
             placeholder="Ingrese el nombre de la empresa"
           />
         </div>

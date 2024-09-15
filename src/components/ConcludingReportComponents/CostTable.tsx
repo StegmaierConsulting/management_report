@@ -1,3 +1,5 @@
+// CostsTable.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface CostsTableProps {
@@ -7,9 +9,15 @@ interface CostsTableProps {
     totalDirect: string;
     totalIndirect: string;
   }) => void;
+  initialData?: {
+    directCosts: { [key: string]: string };
+    indirectCosts: { [key: string]: string };
+    totalDirect: string;
+    totalIndirect: string;
+  };
 }
 
-const CostsTable: React.FC<CostsTableProps> = ({ onDataChange }) => {
+const CostsTable: React.FC<CostsTableProps> = ({ onDataChange, initialData }) => {
   const [directCosts, setDirectCosts] = useState<{ [key: string]: string }>({
     repair: '',
     replacement: '',
@@ -28,8 +36,22 @@ const CostsTable: React.FC<CostsTableProps> = ({ onDataChange }) => {
     others: '',
   });
 
+  // Efecto para inicializar directCosts e indirectCosts con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.directCosts) {
+        setDirectCosts(initialData.directCosts);
+      }
+      if (initialData.indirectCosts) {
+        setIndirectCosts(initialData.indirectCosts);
+      }
+    }
+  }, [initialData]);
+
   const calculateTotal = (costs: { [key: string]: string }) => {
-    return Object.values(costs).reduce((acc, value) => acc + (parseFloat(value) || 0), 0).toFixed(2);
+    return Object.values(costs)
+      .reduce((acc, value) => acc + (parseFloat(value) || 0), 0)
+      .toFixed(2);
   };
 
   const handleInputChange = (
@@ -212,3 +234,4 @@ const CostsTable: React.FC<CostsTableProps> = ({ onDataChange }) => {
 };
 
 export default CostsTable;
+

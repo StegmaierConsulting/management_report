@@ -1,10 +1,13 @@
+// DamagedEquipmentTable.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface DamagedEquipmentTableProps {
   onDataChange: (data: any) => void;
+  initialData?: any;
 }
 
-const DamagedEquipmentTable: React.FC<DamagedEquipmentTableProps> = ({ onDataChange }) => {
+const DamagedEquipmentTable: React.FC<DamagedEquipmentTableProps> = ({ onDataChange, initialData }) => {
   const [formData, setFormData] = useState({
     equipo: '',
     baja: '',
@@ -18,6 +21,13 @@ const DamagedEquipmentTable: React.FC<DamagedEquipmentTableProps> = ({ onDataCha
     constanciaPolicial: '',
     unidadPolicial: '',
   });
+
+  // Efecto para inicializar formData con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

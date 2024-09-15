@@ -1,3 +1,5 @@
+// AccidentCausesForm.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface CausesData {
@@ -11,9 +13,10 @@ interface CausesData {
 
 interface AccidentCausesFormProps {
   onDataChange: (data: CausesData) => void;
+  initialData?: CausesData;
 }
 
-const AccidentCausesForm: React.FC<AccidentCausesFormProps> = ({ onDataChange }) => {
+const AccidentCausesForm: React.FC<AccidentCausesFormProps> = ({ onDataChange, initialData }) => {
   const [formData, setFormData] = useState<CausesData>({
     actoSubestand: '',
     condicionSubestand: '',
@@ -22,6 +25,13 @@ const AccidentCausesForm: React.FC<AccidentCausesFormProps> = ({ onDataChange })
     factoresTrabajo: '',
     factorExterno: '',
   });
+
+  // Efecto para inicializar formData con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,9 +46,11 @@ const AccidentCausesForm: React.FC<AccidentCausesFormProps> = ({ onDataChange })
   return (
     <div className="p-4 mx-14 mb-4">
       <h2 className="text-2xl font-bold mb-4">10. DESCRIPCIÓN DE LAS CAUSAS DEL ACCIDENTE/INCIDENTE</h2>
-      
+
       <h3 className="text-xl font-bold mb-2 underline">Causas Inmediatas:</h3>
-      <p className="mb-4 font-semibold text-lg">Las causas inmediatas de la ocurrencia de este accidente/incidente son:</p>
+      <p className="mb-4 font-semibold text-lg">
+        Las causas inmediatas de la ocurrencia de este accidente/incidente son:
+      </p>
       <table className="table-auto w-full mb-8">
         <tbody>
           <tr>
@@ -84,7 +96,9 @@ const AccidentCausesForm: React.FC<AccidentCausesFormProps> = ({ onDataChange })
       </table>
 
       <h3 className="text-xl font-bold mb-2 underline">Causas Básicas:</h3>
-      <p className="mb-4 text-lg font-semibold">Las causas básicas de la ocurrencia de este accidente/incidente son:</p>
+      <p className="mb-4 text-lg font-semibold">
+        Las causas básicas de la ocurrencia de este accidente/incidente son:
+      </p>
       <table className="table-auto w-full">
         <tbody>
           <tr>

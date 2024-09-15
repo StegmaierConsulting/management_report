@@ -1,11 +1,14 @@
+// TypeAccidentIncidentTable.tsx
+
 import React, { useState, useEffect } from 'react';
 
 interface TypeAccidentIncidentTableProps {
   onDataChange: (data: { accidentChecks: any; incidentChecks: any }) => void;
+  initialData?: { accidentChecks: any; incidentChecks: any };
 }
 
-const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ onDataChange }) => {
-  // Estado para los checkboxes
+const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ onDataChange, initialData }) => {
+  // Estado para los checkboxes de accidentes
   const [accidentChecks, setAccidentChecks] = useState({
     cbil: false,
     sbil: false,
@@ -14,6 +17,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
     cdma: false,
   });
 
+  // Estado para los checkboxes de incidentes
   const [incidentChecks, setIncidentChecks] = useState({
     ii: false,
     cdpp: false,
@@ -21,24 +25,37 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
     ilsb: false,
   });
 
-  // Manejadores de cambio para los checkboxes
+  // Efecto para inicializar los estados con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.accidentChecks) {
+        setAccidentChecks(initialData.accidentChecks);
+      }
+      if (initialData.incidentChecks) {
+        setIncidentChecks(initialData.incidentChecks);
+      }
+    }
+  }, [initialData]);
+
+  // Manejadores de cambio para los checkboxes de accidentes
   const handleAccidentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newAccidentChecks = { ...accidentChecks, [e.target.name]: e.target.checked };
     setAccidentChecks(newAccidentChecks);
   };
 
+  // Manejadores de cambio para los checkboxes de incidentes
   const handleIncidentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newIncidentChecks = { ...incidentChecks, [e.target.name]: e.target.checked };
     setIncidentChecks(newIncidentChecks);
   };
 
-  // Efecto para actualizar el estado en MainPage cada vez que cambien los checks
+  // Efecto para notificar al componente padre cuando los checks cambian
   useEffect(() => {
     onDataChange({ accidentChecks, incidentChecks });
   }, [accidentChecks, incidentChecks, onDataChange]);
 
   return (
-    <div className='my-6 mx-6'>
+    <div className="my-6 mx-6">
       <h2 className="font-bold mb-2">1. TIPO DE ACCIDENTE/INCIDENTE (*)</h2>
       <div className="grid grid-cols-2 gap-4">
         {/* Tabla de Accidentes */}
@@ -51,7 +68,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="cbil"
               checked={accidentChecks.cbil}
               onChange={handleAccidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -61,7 +78,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="sbil"
               checked={accidentChecks.sbil}
               onChange={handleAccidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -71,7 +88,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="cbii"
               checked={accidentChecks.cbii}
               onChange={handleAccidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -81,7 +98,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="sbii"
               checked={accidentChecks.sbii}
               onChange={handleAccidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -91,7 +108,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="cdma"
               checked={accidentChecks.cdma}
               onChange={handleAccidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
         </div>
@@ -106,7 +123,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="ii"
               checked={incidentChecks.ii}
               onChange={handleIncidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -116,7 +133,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="cdpp"
               checked={incidentChecks.cdpp}
               onChange={handleIncidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -126,7 +143,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="tto"
               checked={incidentChecks.tto}
               onChange={handleIncidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
           <div className="p-1 border-t border-[#0070c0] border-dotted flex justify-between items-center font-semibold">
@@ -136,7 +153,7 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
               name="ilsb"
               checked={incidentChecks.ilsb}
               onChange={handleIncidentChange}
-              className='custom-checkbox'
+              className="custom-checkbox"
             />
           </div>
         </div>
@@ -146,3 +163,4 @@ const TypeAccidentIncidentTable: React.FC<TypeAccidentIncidentTableProps> = ({ o
 };
 
 export default TypeAccidentIncidentTable;
+

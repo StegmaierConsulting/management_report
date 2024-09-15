@@ -1,3 +1,5 @@
+// ConclusionsForm.tsx
+
 import React, { useState, useRef, useEffect } from 'react';
 
 interface ConclusionsFormProps {
@@ -7,15 +9,23 @@ interface ConclusionsFormProps {
 
 interface ConclusionsFormComponentProps {
   onDataChange: (data: ConclusionsFormProps) => void;
+  initialData?: ConclusionsFormProps;
 }
 
-const ConclusionsForm: React.FC<ConclusionsFormComponentProps> = ({ onDataChange }) => {
+const ConclusionsForm: React.FC<ConclusionsFormComponentProps> = ({ onDataChange, initialData }) => {
   const [formData, setFormData] = useState<ConclusionsFormProps>({
     title: '11. CONCLUSIONES:',
     conclusionText: '',
   });
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // Efecto para inicializar formData con initialData cuando esté disponible
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   useEffect(() => {
     if (textareaRef.current) {
