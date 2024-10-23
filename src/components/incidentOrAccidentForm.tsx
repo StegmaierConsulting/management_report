@@ -70,19 +70,22 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
   };
 
   const exportToPDF = async () => {
-    const doc = new jsPDF('l', 'mm', 'a4'); // 'l' para landscape
+    const doc = new jsPDF('l', ); // 'l' para landscape
+    const margin = 20; // Margen de 20mm
     if (tableRef.current) {
       const dataUrl = await toPng(tableRef.current, {
         quality: 1,
         pixelRatio: 2,
       });
-      const pdfWidth = doc.internal.pageSize.getWidth();
-      const pdfHeight = doc.internal.pageSize.getHeight();
-
-      doc.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const pdfWidth = doc.internal.pageSize.getWidth() - margin * 2;
+      const pdfHeight = doc.internal.pageSize.getHeight() - margin * 2;
+  
+      // Añadir la imagen con el margen especificado
+      doc.addImage(dataUrl, 'PNG', margin, margin, pdfWidth, pdfHeight);
       doc.save(`Reporte_${formData.suceso}_${formData.tipo}.pdf`);
     }
   };
+  
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
