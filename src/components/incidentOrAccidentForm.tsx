@@ -70,10 +70,16 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
   };
 
   const exportToPDF = async () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l', 'mm', 'a4'); // 'l' para landscape
     if (tableRef.current) {
-      const dataUrl = await toPng(tableRef.current);
-      doc.addImage(dataUrl, 'PNG', 10, 10, 190, 0);
+      const dataUrl = await toPng(tableRef.current, {
+        quality: 1,
+        pixelRatio: 2,
+      });
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = doc.internal.pageSize.getHeight();
+
+      doc.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
       doc.save(`Reporte_${formData.suceso}_${formData.tipo}.pdf`);
     }
   };
@@ -423,11 +429,11 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ formData, handleChange }) =
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex items-center">
+      <div className="mt-4 flex flex-wrap items-center gap-4">
         <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" id="image-upload" />
-        <label htmlFor="image-upload" className="cursor-pointer p-2 bg-green-500 text-white rounded mr-4">Subir Imágenes</label>
-        <button onClick={exportToPPTX} className="p-2 bg-blue-500 text-white rounded mr-4 hover:bg-blue-600 transition-colors duration-300">Exportar a PPTX</button>
-        <button onClick={exportToPDF} className="p-2 bg-blue-500 text-white rounded mr-4 hover:bg-blue-600 transition-colors duration-300">Exportar a PDF</button>
+        <label htmlFor="image-upload" className="cursor-pointer p-2 bg-green-500 text-white rounded">Subir Imágenes</label>
+        <button onClick={exportToPPTX} className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-300">Exportar a PPTX</button>
+        <button onClick={exportToPDF} className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-300">Exportar a PDF</button>
         <input type="file" accept="image/*" multiple onChange={handleLogoUpload} className="hidden" id="logo-upload" />
         <label htmlFor="logo-upload" className="cursor-pointer p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-300">Subir Logos</label>
         <AuthSaveButton data={formData} images={imageFiles} collectionName="Flash" />

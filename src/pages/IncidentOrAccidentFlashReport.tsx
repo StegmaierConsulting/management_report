@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { signOut } from 'firebase/auth';
 import { authentication } from '@/config/firebase';
-import NSpell from 'nspell'; // Asegúrate de que NSpell esté importado correctamente
+import NSpell from 'nspell';
 import { automaticLanguageChecker } from '@/utils/automaticLanguageCheckerIncidentOrAccident';
 import IncidentForm, { DatosExtraidos } from '@/components/incidentOrAccidentForm';
 import '@/app/globals.css';
@@ -50,7 +50,7 @@ const IncidentOrAccident: React.FC = () => {
     accionesInmediatas: '',
     controlesInmediatos: '',
     factoresRiesgo: '',
-    zonal: '', // Agregado
+    zonal: '',
     conBajaIL: false,
     incidenteIndustrial: false,
     sinBajaIL: false,
@@ -92,6 +92,8 @@ const IncidentOrAccident: React.FC = () => {
     setTexto(e.target.value);
   };
 
+  const tableRef = useRef<HTMLDivElement>(null);
+
   return (
     <ProtectedRoute>
       <>
@@ -103,9 +105,11 @@ const IncidentOrAccident: React.FC = () => {
             onChange={handleTextareaChange}
             className="w-full p-2 border border-gray-300 rounded mb-4 text-black resize-none overflow-hidden"
             placeholder="Ingrese el texto aquí..."
-            style={{ minHeight: '4rem', lineHeight: '1.5' }} // Puedes ajustar el minHeight según sea necesario
+            style={{ minHeight: '4rem', lineHeight: '1.5' }}
           />
-          <IncidentForm formData={formData} handleChange={handleChange} />
+          <div ref={tableRef} className="container-sm w-full p-4 bg-gray-100">
+            <IncidentForm formData={formData} handleChange={handleChange} />
+          </div>
         </div>
       </>
     </ProtectedRoute>
